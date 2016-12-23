@@ -38,6 +38,11 @@ font-size: large;
 	border:1px solid #777777;
 }
 
+#nugget {
+	background-color: #101B45;
+	border:1px solid #101B45;
+}
+
 #randomred{
 	background-color: #C01C1C;
 }
