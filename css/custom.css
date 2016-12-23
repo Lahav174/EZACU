@@ -22,6 +22,25 @@
 	background-color: #C01C1C;
 }
 
+
+#technical {
+	background-color: #F0AD4E;
+	border:1px solid #777777;
+}
+
+#nontechnical {
+	background-color: #849F65;
+	border:1px solid #777777;
+}
+
+#globalcore {
+	background-color: #8B572A;
+	border:1px solid #777777;
+}
+
+
+
+
 .randomblue {
 	background-color: #cc0000#
 }
