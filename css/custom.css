@@ -3,6 +3,21 @@
 	margin-left: 30px;
 }
 
+#paramheader {
+	font-size: medium;
+	margin-bottom: 6px;
+}
+
+#paramnote {
+	margin:5px auto 0 auto;
+	line-height: 1.2;
+	font-size: smaller;
+}
+
+.filtersectionheader {
+
+}
+
 #filterheader {
 	background-color: #C01C1C;
 }
