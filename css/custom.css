@@ -43,6 +43,10 @@ font-size: large;
 	border:1px solid #101B45;
 }
 
+#levelcheckboxtext {
+margin-left: -5px;
+}
+
 #randomred{
 	background-color: #C01C1C;
 }
