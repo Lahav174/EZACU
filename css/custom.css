@@ -85,6 +85,10 @@ margin-left: -5px;
 	border:1px solid #428BCA;
 }
 
+#inforow {
+	height: 50px;
+}
+
 .center-inner {
     display: table;
     margin: 0 auto; 
