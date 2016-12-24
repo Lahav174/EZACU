@@ -42,11 +42,21 @@ font-size: large;
 #nugget {
 	background-color: #101B45;
 	border:1px solid #101B45;
+	height: 34px;
+}
+
+#nuggetimg {
+	height: 15px;
+	margin-left: -25px;
+}
+
+#checkmark {
+	height: 45px;
 }
 
 #datatable {
 	font-family: 	Arial, Verdana, sans-serif;
-	font-size:	13px;
+	font-size:	11px;
 }
 
 #levelcheckboxtext {
@@ -55,6 +65,10 @@ margin-left: -5px;
 
 #randomred{
 	background-color: #C01C1C;
+}
+
+#courselevellabel {
+	margin-bottom: -5px;
 }
 
 #randompink{
@@ -71,9 +85,12 @@ margin-left: -5px;
     margin: 0 auto; 
 }
 
+.top-5 { border-top:-5px; }
+
 .top5 { margin-top:5px; }
 .top7 { margin-top:7px; }
 .top10 { margin-top:10px; }
+.top13 { margin-top:13px; }
 .top15 { margin-top:15px; }
 .top17 { margin-top:17px; }
 .top30 { margin-top:30px; }
@@ -98,6 +115,7 @@ margin-left: -5px;
 .right10 { margin-right:10px; }
 .right15 { margin-right:15px; }
 .right17 { margin-right:17px; }
+.right25 { margin-right:25px; }
 .right30 { margin-right:30px; }
 
 
