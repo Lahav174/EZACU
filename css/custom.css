@@ -80,6 +80,11 @@ margin-left: -5px;
 	height: 1px;
 }
 
+#submitquery {
+	background-color: #428BCA;
+	border:1px solid #428BCA;
+}
+
 .center-inner {
     display: table;
     margin: 0 auto; 
