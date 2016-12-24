@@ -121,11 +121,20 @@
 			</form>
 		</div>
 		<div class="col-xs-6 col-sm-6 col-md-6">
-			<div class="panel panel-default">
-				<div class="panel-heading"><font color="grey"><b>Search Results</b></font></div>
-				<div class="panel-body">
-					<p>Only classes we have A-Range data for are included. Please submit your own 
-						A-Ranges to help increase our database!</p>
+			<div class="panel panel-default" id="tablepanel">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-sm-4"><font color="grey"><b>Search Results</b></font></div>
+						<div class="col-sm-3 col-sm-push-5">
+							<button class="arrowbtn" id="leftarrow"><img src="assets/leftpage.png" style="height:20px;"></button>
+							<label class="left15">Page 4</label>
+							<button class="arrowbtn"><img src="assets/rightpage.png" style="height:20px;">
+						</div>
+						</div>
+					</div>
+					<div class="panel-body">
+						Only classes we have A-Range data for are included. Please submit your own 
+						A-Ranges to help increase our database!
 					</div>
 					<div class="table-responsive">
 						<table class="table table-bordered" id="datatable">

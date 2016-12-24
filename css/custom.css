@@ -19,6 +19,18 @@
 font-size: large;
 }
 
+.arrowbtn {
+	border-color: rgba(100, 100, 100, 0.0);
+	background-color: rgba(100, 100, 100, 0.0);
+	max-width: 5px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+#leftarrow {
+	margin-left: -20px;
+}
+
 #filterheader {
 	background-color: #C01C1C;
 }
@@ -57,6 +69,10 @@ font-size: large;
 #datatable {
 	font-family: 	Arial, Verdana, sans-serif;
 	font-size:	11px;
+}
+
+#tablepanel {
+		min-width: 450px;
 }
 
 #levelcheckboxtext {
