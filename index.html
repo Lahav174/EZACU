@@ -8,36 +8,36 @@
 </head>
 <body>
 	<div class="row">
-		<div class="col-xs-6 col-sm-3 col-md-2" id="filter">
+		<div class="col-xs-2" id="filter">
 			<form class="form-horizontal">
-				<label class="h3 text-center">Want to find some easier classes?</label>
-				<div class="form-group top30">
+				<label class="h4 text-center">Want to find some easier classes?</label>
+				<div class="form-group top15">
 					<div class="col-sm-12 text-center" id="paramheader">
 						Text Parameter
 					</div>
 					<div class="col-sm-12">
-						<input type="email" class="form-control" id="inputEmail3" placeholder="e.g. “ECON” or “PHYS”">
+						<input type="email" style="font-size: 8pt" class="form-control" id="inputEmail3" placeholder="e.g. “ECON” or “PHYS”">
 					</div>
 					<div class="col-sm-10 col-sm-push-1 text-center" id="paramnote">
 						<small>Search will only return results that include the text parameter</small>
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-sm-12 bottom30">
-						<button type="button" class="btn btn-lg active col-sm-12" style="color:white; font-size: medium; font-face: 'HelveticaNeue" id="technical">Technical</button>
-						<button type="button" class="btn btn-lg active col-sm-12 top15" style="color:white; font-size: medium; font-face: 'HelveticaNeue" id="nontechnical">Non-Technical</button>
-						<button type="button" class="btn btn-lg active col-sm-12 top15" style="color:white; font-size: medium; font-face: 'HelveticaNeue" id="globalcore">Global Core</button>
+					<div class="col-sm-12 bottom15">
+						<button type="button" class="btn btn-lg active col-sm-12" style="color:white; font-size: small; font-face: 'HelveticaNeue" id="technical">Technical</button>
+						<button type="button" class="btn btn-lg active col-sm-12 top15" style="color:white; font-size: small; font-face: 'HelveticaNeue" id="nontechnical">Non-Technical</button>
+						<button type="button" class="btn btn-lg active col-sm-12 top15" style="color:white; font-size: small; font-face: 'HelveticaNeue" id="globalcore">Global Core</button>
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-sm-12">
+					<div class="col-sm-12 container">
 						<div class="row">
 							<div class="col-sm-12 text-center filtersectionheader">
 								Course Level
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-5" id="randompink"> <!--Minimum level-->
+							<div class="col-sm-5 container"> <!--Minimum level-->
 								<div class="row">
 									<div class="checkbox center-inner">
 										<label><input type="checkbox"><small id="levelcheckboxtext">Minimum</small></label>
@@ -57,7 +57,7 @@
 								</div>
 							</div>
 							<div class="center-text col-sm-2 top45" id="shorthline"></div>
-							<div class="col-sm-5" id="randompink"> <!--Minimum level-->
+							<div class="col-sm-5"> <!--Minimum level-->
 								<div class="row">
 									<div class="checkbox center-inner">
 										<label><input type="checkbox"><small id="levelcheckboxtext">Maximum</small></label>
@@ -82,8 +82,8 @@
 				<div class="form-group">
 					<div class="col-sm-12">
 						<div class="row">
-							<div class="col-sm-12 text-center filtersectionheader top30">
-								Gold/Silver Nuggets
+							<div class="col-sm-12 text-center filtersectionheader top15">
+								CULPA Nuggets
 							</div>
 						</div>
 						<div class="row">
@@ -97,29 +97,37 @@
 			</form>
 		</div>
 		<div class="col-xs-6 col-sm-6 col-md-6">
-			<table class="table table-bordered">
+			<table class="table table-bordered" id="datatable">
 				<thead>
 					<tr class="active">
-						<th>Firstname</th>
-						<th>Lastname</th>
-						<th>Email</th>
+						<th>#</th>
+						<th>Professor</th>
+						<th>Course ID</th>
+						<th>Course Name</th>
+						<th>A-Range</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>John</td>
-						<td>Doe</td>
-						<td>john@example.com</td>
+						<td>1</td>
+						<td>Paul S. Blaer</td>
+						<td>COMS W3133</td>
+						<td>Data Structures and Algorithms</td>
+						<td>43%</td>
 					</tr>
 					<tr>
-						<td>Mary</td>
-						<td>Moe</td>
-						<td>mary@example.com</td>
+						<td>1</td>
+						<td>Paul S. Blaer</td>
+						<td>COMS W3133</td>
+						<td>Data Structures and Algorithms</td>
+						<td>43%</td>
 					</tr>
 					<tr>
-						<td>July</td>
-						<td>Dooley</td>
-						<td>july@example.com</td>
+						<td>1</td>
+						<td>Paul S. Blaer</td>
+						<td>COMS W3133</td>
+						<td>Data Structures and Algorithms</td>
+						<td>43%</td>
 					</tr>
 				</tbody>
 			</table>
