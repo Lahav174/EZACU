@@ -146,6 +146,14 @@ margin-left: -5px;
 	display: flex;
 }
 
+#mainsubtitle {
+	margin-top: -15px;
+}
+
+#mainheader {
+	min-width: 1300px;
+}
+
 #mainrow {
 	overflow: auto;
 	max-height: 100px;
