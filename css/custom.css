@@ -112,12 +112,24 @@ margin-left: -5px;
 #rightcollumn {
 
 	background-color: #BD0FE1;
-	width: 480px;
+	min-width: 480px;
+	white-space: nowrap;
+
+}
+
+#innermainrow {
+	min-width: 1000px;
+	max-width: 1300px;
+	background-color: #C51C1C;
+	height: 100px;
+	display: flex;
 }
 
 #mainrow {
 	max-width: 1100px;
-	background-color: #BD0FE1;
+	min-width: 1000px;
+	overflow: auto;
+	max-height: 100px;
 }
 
 .center-inner {
