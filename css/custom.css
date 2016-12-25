@@ -9,6 +9,11 @@
 	margin-bottom: 6px;
 }
 
+#submitdata {
+	background-color: #3C6492;
+	margin-top: -25px;
+}
+
 #paramnote {
 	margin:5px auto 0 auto;
 	line-height: 1.2;
