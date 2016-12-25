@@ -64,11 +64,26 @@ font-size: large;
 
 #nuggetimg {
 	height: 15px;
-	margin-left: -25px;
+	margin-top: -2px;
+	
 }
 
-#checkmark {
+#darkcheckmark {
 	height: 45px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 15px;
+}
+
+#lightcheckmark {
+	height: 45px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-top: -13px;
+	margin-bottom: 0px;
+	margin-left: 10px;
 }
 
 #datatable {
