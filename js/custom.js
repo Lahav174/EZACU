@@ -8,6 +8,7 @@ function Hello ()
 }
 
 function initDatabase(){
+	console.log("Init Database called");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -24,8 +25,19 @@ function initDatabase(){
 	 // console.log("Element 377: " + cleanStr(objArr[377].name));
 	 var ref = firebase.database().ref();
 	 ref.on("value", function(snapshot) {
-     this.firData = snapshot.val();
-});
+	 	this.firData = snapshot.val();
+	 });
+
+	 setTimeout(function(){
+//submitData("Adam Cannon","ECON W1023","Intro to CS","32");
+for (var i = 0; i < objArr.length; i++) {
+	var e = objArr[i];
+	submitData(e["prof"],e["id"],e["name"],e["ar"])
+}
+console.log("Done!");
+},1000)
+	 	
+	 
 
 	 
 
@@ -46,10 +58,44 @@ function initDatabase(){
 		return output.trim();
 	}
 
-	function submitData() {
-		console.log("Submit data button pressed");
-		//console.log("The ID is " + retrieveElement('course-id'));
-		console.log(firData["Departments"]);
+	function submitData(profName,id,name,ar) {
+		var idarr = id.split(' ');
+		var dept = idarr[0].toUpperCase();
+		var courseSig = idarr[1].toUpperCase();
+		
+     	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
+     		writeData("Departments/" + dept + "/" + courseSig + "/" + profName,[{arange:ar}]);
+     		console.log("#1");
+     		return;
+     	} 
+
+     	var courses = Object.keys(firData["Departments"][dept])
+     	for (var i = courses.length - 1; i >= 0; i--) {
+     		var c = courses[i];
+     		if (c.substring(c.length-4) == courseSig.substring(courseSig.length-4)){//Course id IS found
+     			var profs = Object.keys(firData["Departments"][dept][c])
+     			var profsWithLev = [];
+     			for (var i = profs.length - 1; i >= 0; i--) {
+     				profsWithLev.push({prof: profs[i],lev:levDist(profs[i].toLowerCase(),profName.toLowerCase())});
+     			}
+     			profsWithLev.sort(function(a,b) {return (a.lev > b.lev) ? 1 : ((b.lev > a.lev) ? -1 : 0);} );
+ 				if (profsWithLev[0].lev > 4) {
+ 					writeData("Departments/" + dept + "/" + c + "/" + profName,[{arange:ar}]);
+ 				} else {
+ 					var currentArr = firData["Departments"][dept][c][profsWithLev[0].prof];
+ 					currentArr.push({arange:ar});
+ 					writeData("Departments/" + dept + "/" + c + "/" + profsWithLev[0].prof,currentArr);
+ 				}
+ 				console.log("#2");
+ 				console.log(profsWithLev);
+ 				return;
+ 			}
+ 		}
+ 		console.log("#3");
+     	//Write full path, since the dept exists but not the course
+     	writeData("Departments/" + dept + "/" + courseSig + "/" + profName,[{arange:ar}]);
+
+     
 
 	}
 
@@ -662,8 +708,56 @@ function initDatabase(){
 
 
 
+//Taken from http://stackoverflow.com/a/11958496/5057543
+function levDist(s, t) {
+    var d = []; //2d matrix
 
+    // Step 1
+    var n = s.length;
+    var m = t.length;
 
+    if (n == 0) return m;
+    if (m == 0) return n;
+
+    //Create an array of arrays in javascript (a descending loop is quicker)
+    for (var i = n; i >= 0; i--) d[i] = [];
+
+    // Step 2
+    for (var i = n; i >= 0; i--) d[i][0] = i;
+    for (var j = m; j >= 0; j--) d[0][j] = j;
+
+    // Step 3
+    for (var i = 1; i <= n; i++) {
+        var s_i = s.charAt(i - 1);
+
+        // Step 4
+        for (var j = 1; j <= m; j++) {
+
+            //Check the jagged ld total so far
+            if (i == j && d[i][j] > 4) return n;
+
+            var t_j = t.charAt(j - 1);
+            var cost = (s_i == t_j) ? 0 : 1; // Step 5
+
+            //Calculate the minimum
+            var mi = d[i - 1][j] + 1;
+            var b = d[i][j - 1] + 1;
+            var c = d[i - 1][j - 1] + cost;
+
+            if (b < mi) mi = b;
+            if (c < mi) mi = c;
+
+            d[i][j] = mi; // Step 6
+
+            //Damerau transposition
+            if (i > 1 && j > 1 && s_i == t.charAt(j - 2) && s.charAt(i - 2) == t_j) {
+                d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + cost);
+            }
+        }
+    }
+    // Step 7
+    return d[n][m];
+}
 
 
 //WILL USE LATER
