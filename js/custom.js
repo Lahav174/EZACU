@@ -73,28 +73,25 @@ console.log("Done!");
 			for (var i = depts.length - 1; i >= 0; i--) {
 				if (depts[i].indexOf(searchText) >= 0){
 					var courseSigs = Object.keys(firData["Departments"][depts[i]]);
-					for (var j = courseSigs.length - 1; j >= 0; j--) {
+					for (var j = courseSigs.length - 1; j >= 0; j--) {//A single course now
 						var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
 						courseNameArrNumbers.sort(function(a,b) {
 							var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
 							var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
 							return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
-						//console.log(courseNameArrNumbers);
-						//for (var p = courseNameArrNumbers.length - 1; p >= 0; p--) {
-							var obj = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]];
-							console.log(obj);
-						//}
+						let mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+						//console.log(mostPopularCourseName);
 						var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
 						for (var k = profNames.length - 1; k >= 0; k--) {
-							var datArr = profNames[k];
-							for (var m = datArr.length - 1; m >= 0; m--) {
-								var obj = datArr[m];
-
-								// for (var i = datArr.length - 1; i >= 0; i--) {
-								// 	datArr[i]
-								// }
-								//matching.push({id:(depts[i] + " " + courseSigs[j],)});
+							var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
+							var averageArange = 0;
+							for (var m = arangeArr.length - 1; m >= 0; m--) {
+								averageArange += (arangeArr[m]["arange"]/arangeArr.length);
 							}
+							var obj = {ar:Math.round(averageArange),courseName:mostPopularCourseName,id:depts[i] + " " + courseSigs[j],profName:profNames[k]};
+							console.log(obj);
+							matching.push(obj);
+
 						}
 					}
 				} else {
