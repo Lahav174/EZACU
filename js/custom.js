@@ -28,6 +28,8 @@ function initDatabase(){
 	 	this.firData = snapshot.val();
 	 });
 
+	 setTable([]);
+
 	}
 
 
@@ -50,11 +52,11 @@ function initDatabase(){
 				str += "<td>" + data[i]["profName"] + "</td>";
 				str += "<td>" + data[i]["id"] + "</td>";
 				str += "<td>" + data[i]["courseName"] + "</td>";
-				str += "<td>" + data[i]["ar"] + "%</td>";
+				str += "<td class=\"text-center\">" + data[i]["ar"] + "%</td>";
 				str += "</tr>";
 			} else {
 				str += "<tr>";
-				str += "<td></td>";
+				str += "<td><img src=\"assets/whiteRect.png\" id=\"nuggetimg\"></td>";
 				str += "<td></td>";
 				str += "<td></td>";
 				str += "<td></td>";
