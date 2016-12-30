@@ -273,7 +273,7 @@
 						</div>
 						<div class="row top7">
 							<form class="form-horizontal" id="searchForm">
-								<input type="text" onkeydown="searchChange()" style="font-size: 10pt" class="form-control" id="searchbar" placeholder="Search...">
+								<input type="text" oninput="searchChange()" style="font-size: 10pt" class="form-control" id="searchbar" placeholder="Search...">
 							</form>
 						</div>
 						<div class="row top60">
@@ -338,13 +338,12 @@
 </div>
 
 
-
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 <script src="js/custom.js" type="text/javascript">
 </script>
 <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
 <script>initDatabase();</script>
 
-<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js"></script>
 </body>
 </html>

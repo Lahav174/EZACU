@@ -63,13 +63,50 @@ console.log("Done!");
 	}
 
 	function searchChange(){
-		console.log("Search text changed!");
+		var searchText = retrieveElement("searchbar")
+		if (searchText.length < 3){
+			console.log("Too short");
+		} else {
+			var matching = [];
+			console.log("Search text changed: " + searchText);
+			var depts = Object.keys(firData["Departments"]);
+			for (var i = depts.length - 1; i >= 0; i--) {
+				if (depts[i].indexOf(searchText) >= 0){
+					var courseSigs = Object.keys(firData["Departments"][depts[i]]);
+					for (var j = courseSigs.length - 1; j >= 0; j--) {
+						var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
+						courseNameArrNumbers.sort(function(a,b) {
+							var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
+							var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
+							return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
+						//console.log(courseNameArrNumbers);
+						//for (var p = courseNameArrNumbers.length - 1; p >= 0; p--) {
+							var obj = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]];
+							console.log(obj);
+						//}
+						var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
+						for (var k = profNames.length - 1; k >= 0; k--) {
+							var datArr = profNames[k];
+							for (var m = datArr.length - 1; m >= 0; m--) {
+								var obj = datArr[m];
+
+								// for (var i = datArr.length - 1; i >= 0; i--) {
+								// 	datArr[i]
+								// }
+								//matching.push({id:(depts[i] + " " + courseSigs[j],)});
+							}
+						}
+					}
+				} else {
+
+				}
+			}
+		}
 	}
 
-// 	document.getElementById("searchForm")).submit(function() {
-//     //search($("#searchbar").get(0));
-//     return false;
-// });
+	$("#searchForm").submit(function() {
+		return false;
+	});
 
 	function submitData(profName,id,name,ar) {
 		var idarr = id.split(' ');
@@ -134,7 +171,7 @@ console.log("Done!");
      }
 
 
-
+/*
      var objArr = [{prof: "Nam Le",id: "MATH W4065",name: "HONORS COMPLEX VARIABLES",   ar: "67"},
      {prof: "Miklos Gyulassy",id: "PHYS G6037",name: "QUANTUM MECHANICS I",   ar: "52"},
      {prof: "Allan Blaer",id: "PHYS G6092",name:" ELECTROMAGNETIC THEORY",   ar: "57"},
@@ -720,7 +757,7 @@ console.log("Done!");
      {prof: "Stephanie Schmitt-Grohe",id:   "ECON 3213",name:" INTERMEDIATE MACROECONOMICS",  ar: "41"},
      {prof: "Joshua Edwin",id:   "ENGL C1010",name:" UNIVERSITY WRITING",  ar: "21"}]
 
-
+     */
 
 
 
