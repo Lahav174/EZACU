@@ -28,23 +28,44 @@ function initDatabase(){
 	 	this.firData = snapshot.val();
 	 });
 
-	 setTimeout(function(){
-//submitData("Adam Cannon","ECON W1023","Intro to CS","32");
-for (var i = 0; i < 0; i++) {
-	var e = objArr[i];
-	submitData(e["prof"],e["id"],e["name"],e["ar"])
-}
-console.log("Done!");
-},1000)
-
-	 
-
-	 
-
-
-	 //writeData("Departments/FAKE/W6666/Lahav Lipson/",{arange:Number("40")});
-
 	}
+
+
+	function setTable(data) {
+		console.log(data.length);
+		var str = "<thead>";
+		str += "<tr class=\"active\">";
+		str += "<th>#</th>";
+		str += "<th>Professor</th>";
+		str += "<th>Course ID</th>";
+		str += "<th>Course Name</th>"
+		str += "<th>A-Range</th>"
+		str += "</tr>"
+		str += "</thead>"
+		str += "<tbody>";
+		for (var i=0; i<20; i++){
+			if (i < data.length){				
+				str += "<tr>";
+				str += "<td>" + i + "</td>";
+				str += "<td>" + data[i]["profName"] + "</td>";
+				str += "<td>" + data[i]["id"] + "</td>";
+				str += "<td>" + data[i]["courseName"] + "</td>";
+				str += "<td>" + data[i]["ar"] + "%</td>";
+				str += "</tr>";
+			} else {
+				str += "<tr>";
+				str += "<td></td>";
+				str += "<td></td>";
+				str += "<td></td>";
+				str += "<td></td>";
+				str += "<td></td>";
+				str += "</tr>";
+			}
+		}
+		str += "</tbody>";
+
+		document.getElementById('datatable').innerHTML = str;
+	}	 
 
 
 	function cleanStr(str){
@@ -65,10 +86,10 @@ console.log("Done!");
 	function searchChange(){
 		var searchText = retrieveElement("searchbar")
 		searchText = searchText.toLowerCase();
+		var matching = [];
 		if (searchText.length < 3){
-			console.log("Too short");
+			setTable(matching);
 		} else {
-			var matching = [];
 			console.log("Search text changed: " + searchText);
 			var depts = Object.keys(firData["Departments"]);
 			for (var i = depts.length - 1; i >= 0; i--) {
@@ -122,7 +143,6 @@ console.log("Done!");
 							var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
 							for (var k = profNames.length - 1; k >= 0; k--) {
 								if ((profNames[k].toLowerCase()).indexOf(searchText) >= 0){
-									console.log("jjjj");
 									var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
 									var averageArange = 0;
 									for (var m = arangeArr.length - 1; m >= 0; m--) {
@@ -136,8 +156,9 @@ console.log("Done!");
 					}
 				}
 			}
+			setTable(matching);
 		}
-		console.log(matching);
+
 	}
 
 	$("#searchForm").submit(function() {
@@ -859,29 +880,5 @@ for (var i = 1; i <= n; i++) {
 
 
 //WILL USE LATER
-/*
-function myFunction() {
-    var str = "<thead>";
-	str += "<tr class=\"active\">";
-	str += "<th>#</th>";
-	str += "<th>Professor</th>";
-	str += "<th>Course ID</th>";
-	str += "<th>Course Name</th>"
-	str += "<th>A-Range</th>"
-	str += "</tr>"
-	str += "</thead>"
-	str += "<tbody>";
-	for (var i=0; i<5; i++){	
-		str += "<tr>";
-		str += "<td>1</td>";
-		str += "<td>Paul S. Blaer</td>";
-		str += "<td>COMS W3134</td>";
-		str += "<td>Data Structures and Algorithms</td>";
-		str += "<td>41%</td>";
-		str += "</tr>";
-	}
-	str += "</tbody>";
 
-	document.getElementById('datatable').innerHTML = str;
-}
-*/
+
