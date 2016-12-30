@@ -87,20 +87,35 @@ function initDatabase(){
 
 	function searchChange(){
 		var searchText = retrieveElement("searchbar")
-		searchText = searchText.toLowerCase();
-		var matching = [];
 		if (searchText.length == 0) {
-			setTable(matching);
 			$("#tableerror").html("");
+			setTable([]);
 		} else if (searchText.length < 3){
-			setTable(matching);
 			$("#tableerror").html("<b>Search must be at least 3 characters long</b>");
+			setTable([]);
 		} else {
-			console.log("Search text changed: " + searchText);
-			var depts = Object.keys(firData["Departments"]);
-			for (var i = depts.length - 1; i >= 0; i--) {
-				if ((depts[i].toLowerCase()).indexOf(searchText) >= 0){
-					var courseSigs = Object.keys(firData["Departments"][depts[i]]);
+			var matching = searchDatabaseForSubstring(searchText);
+			setTable(matching);
+			if (matching.length > 0){
+				$("#tableerror").html("");
+			} else {
+				$("#tableerror").html("<b>No results matched your search</b>");
+			}
+		}
+
+		
+	}
+
+	function searchDatabaseForSubstring(substring){
+		
+		var searchText = substring.toLowerCase();
+		var matching = [];
+		
+		console.log("Search text changed: " + searchText);
+		var depts = Object.keys(firData["Departments"]);
+		for (var i = depts.length - 1; i >= 0; i--) {
+			if ((depts[i].toLowerCase()).indexOf(searchText) >= 0){
+				var courseSigs = Object.keys(firData["Departments"][depts[i]]);
 					for (var j = courseSigs.length - 1; j >= 0; j--) {//A single course now
 						var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
 						courseNameArrNumbers.sort(function(a,b) {
@@ -163,31 +178,23 @@ function initDatabase(){
 									var obj = {ar:Math.round(averageArange),courseName:mostPopularCourseName,id:depts[i] + " " + courseSigs[j],profName:profNames[k]};
 									matching.push(obj);
 								}
-							}
-							
+							}							
 						}
 					}
 				}
-			}
-			if (matching.length > 0){
-				$("#tableerror").html("<b>No results matched your search</b>");
-			} else {
-				$("#tableerror").html("");
-			}
-			setTable(matching);
+			}			
+			return matching;
 		}
 
-	}
+		$("#searchForm").submit(function() {
+			return false;
+		});
 
-	$("#searchForm").submit(function() {
-		return false;
-	});
-
-	function submitData(profName,id,name,ar) {
-		var idarr = id.split(' ');
-		var dept = idarr[0].toUpperCase();
-		var courseSig = idarr[1].toUpperCase();
-		var courseName = cleanStr(name);
+		function submitData(profName,id,name,ar) {
+			var idarr = id.split(' ');
+			var dept = idarr[0].toUpperCase();
+			var courseSig = idarr[1].toUpperCase();
+			var courseName = cleanStr(name);
 
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
      		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar}]);
