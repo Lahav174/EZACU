@@ -137,6 +137,13 @@ function initDatabase(){
 							}
 						} else {
 							var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
+							var foundCourseNameWithSubstring = false;
+							for (var n = courseNameArrNumbers.length - 1; n >= 0; n--) {
+								if (((firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[n]]["name"]).toLowerCase()).indexOf(searchText) >= 0){
+									foundCourseNameWithSubstring = true;
+									console.log("Found matching name for " + firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[n]]["name"]);
+								}
+							}
 							courseNameArrNumbers.sort(function(a,b) {
 								var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
 								var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
@@ -144,7 +151,7 @@ function initDatabase(){
 							let mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
 							var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
 							for (var k = profNames.length - 1; k >= 0; k--) {
-								if ((profNames[k].toLowerCase()).indexOf(searchText) >= 0){
+								if (foundCourseNameWithSubstring || (profNames[k].toLowerCase()).indexOf(searchText) >= 0){
 									var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
 									var averageArange = 0;
 									for (var m = arangeArr.length - 1; m >= 0; m--) {
@@ -154,6 +161,7 @@ function initDatabase(){
 									matching.push(obj);
 								}
 							}
+							
 						}
 					}
 				}
