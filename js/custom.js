@@ -34,7 +34,7 @@ function initDatabase(){
 
 
 	function setTable(data) {
-		console.log(data.length);
+		//console.log(data.length);
 		var str = "<thead>";
 		str += "<tr class=\"active\">";
 		str += "<th>#</th>";
@@ -89,8 +89,12 @@ function initDatabase(){
 		var searchText = retrieveElement("searchbar")
 		searchText = searchText.toLowerCase();
 		var matching = [];
-		if (searchText.length < 3){
+		if (searchText.length == 0) {
 			setTable(matching);
+			$("#tableerror").html("");
+		} else if (searchText.length < 3){
+			setTable(matching);
+			$("#tableerror").html("<b>Search must be at least 3 characters long</b>");
 		} else {
 			console.log("Search text changed: " + searchText);
 			var depts = Object.keys(firData["Departments"]);
@@ -141,7 +145,6 @@ function initDatabase(){
 							for (var n = courseNameArrNumbers.length - 1; n >= 0; n--) {
 								if (((firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[n]]["name"]).toLowerCase()).indexOf(searchText) >= 0){
 									foundCourseNameWithSubstring = true;
-									console.log("Found matching name for " + firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[n]]["name"]);
 								}
 							}
 							courseNameArrNumbers.sort(function(a,b) {
@@ -165,6 +168,11 @@ function initDatabase(){
 						}
 					}
 				}
+			}
+			if (matching.length > 0){
+				$("#tableerror").html("<b>No results matched your search</b>");
+			} else {
+				$("#tableerror").html("");
 			}
 			setTable(matching);
 		}
