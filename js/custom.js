@@ -64,6 +64,7 @@ console.log("Done!");
 
 	function searchChange(){
 		var searchText = retrieveElement("searchbar")
+		searchText = searchText.toLowerCase();
 		if (searchText.length < 3){
 			console.log("Too short");
 		} else {
@@ -71,7 +72,7 @@ console.log("Done!");
 			console.log("Search text changed: " + searchText);
 			var depts = Object.keys(firData["Departments"]);
 			for (var i = depts.length - 1; i >= 0; i--) {
-				if (depts[i].indexOf(searchText) >= 0){
+				if ((depts[i].toLowerCase()).indexOf(searchText) >= 0){
 					var courseSigs = Object.keys(firData["Departments"][depts[i]]);
 					for (var j = courseSigs.length - 1; j >= 0; j--) {//A single course now
 						var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
@@ -80,7 +81,6 @@ console.log("Done!");
 							var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
 							return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
 						let mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
-						//console.log(mostPopularCourseName);
 						var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
 						for (var k = profNames.length - 1; k >= 0; k--) {
 							var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
@@ -89,16 +89,55 @@ console.log("Done!");
 								averageArange += (arangeArr[m]["arange"]/arangeArr.length);
 							}
 							var obj = {ar:Math.round(averageArange),courseName:mostPopularCourseName,id:depts[i] + " " + courseSigs[j],profName:profNames[k]};
-							console.log(obj);
 							matching.push(obj);
-
 						}
 					}
 				} else {
-
+					var courseSigs = Object.keys(firData["Departments"][depts[i]]);
+					for (var j = courseSigs.length - 1; j >= 0; j--) {
+						if ((courseSigs[j].toLowerCase()).indexOf(searchText) >= 0){
+							var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
+							courseNameArrNumbers.sort(function(a,b) {
+								var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
+								var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
+								return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
+							let mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+							var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
+							for (var k = profNames.length - 1; k >= 0; k--) {
+								var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
+								var averageArange = 0;
+								for (var m = arangeArr.length - 1; m >= 0; m--) {
+									averageArange += (arangeArr[m]["arange"]/arangeArr.length);
+								}
+								var obj = {ar:Math.round(averageArange),courseName:mostPopularCourseName,id:depts[i] + " " + courseSigs[j],profName:profNames[k]};
+								matching.push(obj);
+							}
+						} else {
+							var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
+							courseNameArrNumbers.sort(function(a,b) {
+								var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
+								var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
+								return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
+							let mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+							var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
+							for (var k = profNames.length - 1; k >= 0; k--) {
+								if ((profNames[k].toLowerCase()).indexOf(searchText) >= 0){
+									console.log("jjjj");
+									var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
+									var averageArange = 0;
+									for (var m = arangeArr.length - 1; m >= 0; m--) {
+										averageArange += (arangeArr[m]["arange"]/arangeArr.length);
+									}
+									var obj = {ar:Math.round(averageArange),courseName:mostPopularCourseName,id:depts[i] + " " + courseSigs[j],profName:profNames[k]};
+									matching.push(obj);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
+		console.log(matching);
 	}
 
 	$("#searchForm").submit(function() {
