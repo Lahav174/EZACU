@@ -39,7 +39,9 @@ function initDatabase(){
 		if (!textParam) {textParam = "";}
 		let filterGold = false;
 		let filterSilver = false;
-		let filterGlobalCore = true;
+		let filterGlobalCore = false;
+		let arFloor = document.getElementById('myRange').value;
+		console.log(arFloor);
 
 
 		
@@ -82,10 +84,18 @@ function initDatabase(){
 				return false;
 			});
 		}
-		console.log(datArr);
+		if (arFloor > 0){
+			datArr = datArr.filter(function(e){
+				return e["ar"] > (arFloor);
+			});
+		}
+		
 		console.log("Done!");
+		datArr.sort(function(a,b) {
+			return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
+		console.log(datArr);
+		setTable(datArr);
 	}
-
 
 	function setTable(data) {
 		//console.log(data.length);
@@ -137,6 +147,11 @@ function initDatabase(){
 			}
 		}
 		return output.trim();
+	}
+
+	function sliderUpdate(){
+		let arFloor = document.getElementById('myRange').value;
+		$("#sliderSubLabel").html("<xsall>At least <b>" + arFloor + "%</b> of students got As</xsall>");
 	}
 
 	function searchChange(){
