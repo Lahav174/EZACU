@@ -30,6 +30,7 @@ font-size: large;
 	max-width: 5px;
 	padding-top: 0px;
 	padding-bottom: 0px;
+	outline: none !important;
 }
 
 #leftarrow {

@@ -9,6 +9,12 @@ var maxLevel = 4000;
 var filterGold = false;
 var filterSilver = false;
 
+var tableData = [];
+var pageNumber = 0;
+
+var leftPageEnabled = false
+var rightPageEnabled = false
+
 
 function initDatabase(){
 	console.log("Init Database called");
@@ -30,10 +36,10 @@ function initDatabase(){
 	 	this.firData = snapshot.val();
 	 });
 
-	 setTable([]);
+	 setTable(0,[]);
 
 	 jQuery("button").click(function(e){
-	 	console.log(e.target.id);
+	 	//console.log(e.target.id);
 	 	switch (e.target.id) {
 	 		case "technical":
 	 		if (filterTechnical){
@@ -195,12 +201,41 @@ function initDatabase(){
 		console.log("Done!");
 		datArr.sort(function(a,b) {
 			return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
-		console.log(datArr);
-		setTable(datArr);
+		//console.log(datArr);
+		setTable(0,datArr);
 	}
 
-	function setTable(data) {
-		//console.log(data.length);
+	function nextPage() {
+		console.log("next page");
+		if (rightPageEnabled){
+			pageNumber++;
+			setTable(pageNumber,tableData);
+		}
+	}
+
+	function lastPage() {
+		console.log("last page");
+		if (leftPageEnabled){
+			pageNumber--;
+			setTable(pageNumber,tableData);
+		}
+	}
+
+	function setTable(page,data) {
+
+		if (rightPageEnabled = (data.length > 18*(page+1))){
+			$("#rightarrow").html("<img src=\"assets/rightpage.png\" style=\"height:20px;\">");
+		} else {
+			$("#rightarrow").html("<img src=\"assets/rightpagedis.png\" style=\"height:20px;\">");
+		}
+		if (leftPageEnabled = (page != 0)){
+			$("#leftarrow").html("<img src=\"assets/leftpage.png\" style=\"height:20px;\">");
+		} else {
+			$("#leftarrow").html("<img src=\"assets/leftpagedis.png\" style=\"height:20px;\">");
+		}
+		tableData = data;
+		pageNumber = page;
+		$("#pagenum").html("Page " + (page+1));
 		var str = "<thead>";
 		str += "<tr class=\"active\">";
 		str += "<th>#</th>";
@@ -211,10 +246,10 @@ function initDatabase(){
 		str += "</tr>"
 		str += "</thead>"
 		str += "<tbody>";
-		for (var i=0; i<18; i++){
+		for (var i=page*18; i<18*(page+1); i++){
 			if (i < data.length){				
 				str += "<tr>";
-				str += "<td>" + i + "</td>";
+				str += "<td>" + (i+1) + "</td>";
 				str += "<td>" + data[i]["profName"] + "</td>";
 				str += "<td>" + data[i]["id"] + "</td>";
 				str += "<td>" + data[i]["courseName"] + "</td>";
@@ -260,14 +295,14 @@ function initDatabase(){
 		var searchText = retrieveElement("searchbar")
 		if (searchText.length == 0) {
 			$("#tableerror").html("");
-			setTable([]);
+			setTable(0,[]);
 		} else if (searchText.length < 3){
 			$("#tableerror").html("<b>Search must be at least 3 characters long</b>");
-			setTable([]);
+			setTable(0,[]);
 		} else {
 			var matching = searchDatabaseForSubstring(searchText);
 			matching.sort(function(a,b) { return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
-			setTable(matching);
+			setTable(0,matching);
 			if (matching.length > 0){
 				$("#tableerror").html("");
 			} else {
