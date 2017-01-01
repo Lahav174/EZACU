@@ -1,8 +1,14 @@
 
 var firData;
 
+var filterGlobalCore = false;
+var filterTechnical = false
+var filterNonTechnical = false
 var minLevel = 1000;
 var maxLevel = 4000;
+var filterGold = false;
+var filterSilver = false;
+
 
 function initDatabase(){
 	console.log("Init Database called");
@@ -26,94 +32,136 @@ function initDatabase(){
 
 	 setTable([]);
 
-	 jQuery(".dropBtn").click(function(e){
-		e.preventDefault();
-		switch (e.target.id) {
-			case "onekmin": 
-			minLevel = 1000;
-			break;
-			case "twokmin": 
-			minLevel = 2000;
-			break;
-			case "threekmin": 
-			minLevel = 3000;
-			break;
-			case "fourkmin": 
-			minLevel = 4000;
-			break;
-			case "fivekmin": 
-			minLevel = 5000;
-			break;
-			case "sixkmin": 
-			minLevel = 6000;
-			break;
-			case "onekmax": 
-			maxLevel = 1000;
-			break;
-			case "twokmax": 
-			maxLevel = 2000;
-			break;
-			case "threekmax": 
-			maxLevel = 3000;
-			break;
-			case "fourkmax": 
-			maxLevel = 4000;
-			break;
-			case "fivekmax": 
-			maxLevel = 5000;
-			break;
-			case "sixkmax": 
-			maxLevel = 6000;
-			break;
-			default:
-			alert("The target id is: " + e.target.id + ". This shouldn't happen.");
-			
-		}
-		$("#minCover").html(minLevel + "   <span class=\"caret\"></span>");
-		$("#maxCover").html(maxLevel + "   <span class=\"caret\"></span>");
-	});
+	 jQuery("button").click(function(e){
+	 	console.log(e.target.id);
+	 	switch (e.target.id) {
+	 		case "technical":
+	 		if (filterTechnical){
+	 			document.getElementById("technical").className = "btn btn-lg col-xs-12";
+	 		} else {
+	 			document.getElementById("technical").className = "btn btn-lg col-xs-12 glowing";
+	 		}
+	 		filterTechnical = !filterTechnical;
+	 		break;
+	 		case "nontechnical":
+	 		if (filterNonTechnical){
+	 			document.getElementById("nontechnical").className = "btn btn-lg col-xs-12 top15";
+	 		} else {
+	 			document.getElementById("nontechnical").className = "btn btn-lg col-xs-12 top15 glowing";
+	 		}
+	 		filterNonTechnical = !filterNonTechnical;
+	 		break;
+	 		case "globalcore":
+	 		if (filterGlobalCore){
+	 			document.getElementById("globalcore").className = "btn btn-lg col-xs-12 top15";
+	 		} else {
+	 			document.getElementById("globalcore").className = "btn btn-lg col-xs-12 top15 glowing";
+	 		}
+	 		filterGlobalCore = !filterGlobalCore;
+	 		break;
+	 		case "goldnuggetbtn":
+	 		case "goldnuggetimg":
+	 		if (filterGold){
+	 			document.getElementById("goldnuggetbtn").className = "btn btn-lg col-xs-5 col-xs-push-2";
+	 		} else {
+	 			document.getElementById("goldnuggetbtn").className = "btn btn-lg col-xs-5 col-xs-push-2 glowing";
+	 		}
+	 		filterGold = !filterGold;
+	 		break;
+	 		case "silvernuggetbtn":
+	 		case "silvernuggetimg":
+	 		if (filterSilver){
+	 			document.getElementById("silvernuggetbtn").className = "btn btn-lg col-xs-5 col-xs-push-0";
+	 		} else {
+	 			document.getElementById("silvernuggetbtn").className = "btn btn-lg col-xs-5 col-xs-push-0 glowing";
+	 		}
+	 		filterSilver = !filterSilver;
+	 		break;
+	 		default:
+	 	}
+	 });
 
+	 jQuery(".dropBtn").click(function(e){
+	 	e.preventDefault();
+	 	switch (e.target.id) {
+	 		case "onekmin": 
+	 		minLevel = 1000;
+	 		break;
+	 		case "twokmin": 
+	 		minLevel = 2000;
+	 		break;
+	 		case "threekmin": 
+	 		minLevel = 3000;
+	 		break;
+	 		case "fourkmin": 
+	 		minLevel = 4000;
+	 		break;
+	 		case "fivekmin": 
+	 		minLevel = 5000;
+	 		break;
+	 		case "sixkmin": 
+	 		minLevel = 6000;
+	 		break;
+	 		case "onekmax": 
+	 		maxLevel = 1000;
+	 		break;
+	 		case "twokmax": 
+	 		maxLevel = 2000;
+	 		break;
+	 		case "threekmax": 
+	 		maxLevel = 3000;
+	 		break;
+	 		case "fourkmax": 
+	 		maxLevel = 4000;
+	 		break;
+	 		case "fivekmax": 
+	 		maxLevel = 5000;
+	 		break;
+	 		case "sixkmax": 
+	 		maxLevel = 6000;
+	 		break;
+	 		default:
+	 		alert("The target id is: " + e.target.id + ". This shouldn't happen.");
+
+	 	}
+	 	$("#minCover").html(minLevel + "   <span class=\"caret\"></span>");
+	 	$("#maxCover").html(maxLevel + "   <span class=\"caret\"></span>");
+	 });
 	}
 
 	function filter(){
 		console.log("started filter");
 		var textParam = retrieveElement("textparam");
 		if (!textParam) {textParam = "";}
-		let filterGold = false;
-		let filterSilver = false;
-		let filterGlobalCore = false;
 		let arFloor = document.getElementById('myRange').value;
 		console.log(arFloor);
 
-
 		
 		var datArr = searchDatabaseForSubstring(textParam);
-		if (filterGold){
+		if (filterGold || filterSilver){
 			datArr = datArr.filter(function(e){
 				let name = e["profName"];
-				for (var i = 0; i < goldNuggets["professors"].length; i++) {
-					let firstName = goldNuggets["professors"][i]["first_name"];
-					let lastName = goldNuggets["professors"][i]["last_name"];
-					if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
-						return true;
-					} 
+				if (filterGold){
+					for (var i = 0; i < goldNuggets["professors"].length; i++) {
+						let firstName = goldNuggets["professors"][i]["first_name"];
+						let lastName = goldNuggets["professors"][i]["last_name"];
+						if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
+							return true;
+						} 
+					}
+				} 
+				if (filterSilver){
+					for (var i = 0; i < silverNuggets["professors"].length; i++) {
+						let firstName = silverNuggets["professors"][i]["first_name"];
+						let lastName = silverNuggets["professors"][i]["last_name"];
+						if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
+							return true;
+						} 
+					}
 				}
 				return false;
 			});
-		}
-		if (filterSilver){
-			datArr = datArr.filter(function(e){
-				let name = e["profName"];
-				for (var i = 0; i < silverNuggets["professors"].length; i++) {
-					let firstName = silverNuggets["professors"][i]["first_name"];
-					let lastName = silverNuggets["professors"][i]["last_name"];
-					if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
-						return true;
-					} 
-				}
-				return false;
-			});
-		}
+		} 
 		if (filterGlobalCore){
 			datArr = datArr.filter(function(e){
 				let id = e["id"].split(' ');

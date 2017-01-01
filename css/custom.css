@@ -46,6 +46,15 @@ font-size: large;
 	border:1px solid #777777;
 }
 
+.glowing {
+	border-color: #FF0000;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 16px rgba(0, 70, 150, 1);
+}
+
+.btn:focus,.btn:active {
+   outline: none !important;
+}
+
 #nontechnical {
 	background-color: #849F65;
 	border:1px solid #777777;
@@ -56,16 +65,26 @@ font-size: large;
 	border:1px solid #777777;
 }
 
-#nugget {
+#goldnuggetbtn {
 	background-color: #101B45;
 	border:1px solid #101B45;
 	height: 34px;
 }
 
-#nuggetimg {
+#silvernuggetbtn {
+	background-color: #101B45;
+	border:1px solid #101B45;
+	height: 34px;
+}
+
+#goldnuggetimg {
 	height: 15px;
 	margin-top: -2px;
-	
+}
+
+#silvernuggetimg {
+	height: 15px;
+	margin-top: -2px;
 }
 
 #darkcheckmark {
