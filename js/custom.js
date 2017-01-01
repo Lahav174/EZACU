@@ -1,11 +1,8 @@
 
 var firData;
 
-function Hello ()
-{
-	console.log("Hey, this is Lahav");
-
-}
+var minLevel = 1000;
+var maxLevel = 4000;
 
 function initDatabase(){
 	console.log("Init Database called");
@@ -29,7 +26,52 @@ function initDatabase(){
 
 	 setTable([]);
 
-	 console.log(goldNuggets["professors"].length);
+	 jQuery(".dropBtn").click(function(e){
+		e.preventDefault();
+		switch (e.target.id) {
+			case "onekmin": 
+			minLevel = 1000;
+			break;
+			case "twokmin": 
+			minLevel = 2000;
+			break;
+			case "threekmin": 
+			minLevel = 3000;
+			break;
+			case "fourkmin": 
+			minLevel = 4000;
+			break;
+			case "fivekmin": 
+			minLevel = 5000;
+			break;
+			case "sixkmin": 
+			minLevel = 6000;
+			break;
+			case "onekmax": 
+			maxLevel = 1000;
+			break;
+			case "twokmax": 
+			maxLevel = 2000;
+			break;
+			case "threekmax": 
+			maxLevel = 3000;
+			break;
+			case "fourkmax": 
+			maxLevel = 4000;
+			break;
+			case "fivekmax": 
+			maxLevel = 5000;
+			break;
+			case "sixkmax": 
+			maxLevel = 6000;
+			break;
+			default:
+			alert("The target id is: " + e.target.id + ". This shouldn't happen.");
+			
+		}
+		$("#minCover").html(minLevel + "   <span class=\"caret\"></span>");
+		$("#maxCover").html(maxLevel + "   <span class=\"caret\"></span>");
+	});
 
 	}
 
@@ -109,7 +151,7 @@ function initDatabase(){
 		str += "</tr>"
 		str += "</thead>"
 		str += "<tbody>";
-		for (var i=0; i<20; i++){
+		for (var i=0; i<18; i++){
 			if (i < data.length){				
 				str += "<tr>";
 				str += "<td>" + i + "</td>";
