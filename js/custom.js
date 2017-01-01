@@ -131,6 +131,18 @@ function initDatabase(){
 				return e["ar"] > (arFloor);
 			});
 		}
+		if (document.getElementById('levelcheckboxmin').checked) {
+			datArr = datArr.filter(function(e){
+				let sig = (e["id"].split(' '))[1];
+				return Number(sig.charAt(sig.length-4))*1000 >= minLevel;
+			});
+		}
+		if (document.getElementById('levelcheckboxmax').checked) {
+			datArr = datArr.filter(function(e){
+				let sig = (e["id"].split(' '))[1];
+				return Number(sig.charAt(sig.length-4))*1000 <= maxLevel;
+			});
+		}
 		
 		console.log("Done!");
 		datArr.sort(function(a,b) {
@@ -206,6 +218,7 @@ function initDatabase(){
 			setTable([]);
 		} else {
 			var matching = searchDatabaseForSubstring(searchText);
+			matching.sort(function(a,b) { return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
 			setTable(matching);
 			if (matching.length > 0){
 				$("#tableerror").html("");
