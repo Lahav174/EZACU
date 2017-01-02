@@ -409,7 +409,7 @@ function initDatabase(){
 		});
 
 	function submitButtonPressed(){
-			
+
 		let courseID = retrieveElement("course-id");
 		let splitID = courseID.split(' ');
 
@@ -437,14 +437,16 @@ function initDatabase(){
 
 		$("#submissionerror").html("");
 
-		console.log("Submit!: " + courseID);
+		var date = new Date();
+		var dateStr = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+
+		submitData(profName,courseID,courseName,aRange,dateStr);
+
+		location.reload(false);
+		
 	}
 
-	function isNumber(n) {
-		return !isNaN(parseFloat(n)) && isFinite(n);
-	}
-
-	function submitData(pname,id,name,ar) {
+	function submitData(pname,id,name,ar,datestr) {
 		var idarr = id.split(' ');
 		var dept = idarr[0].toUpperCase();
 		var courseSig = idarr[1].toUpperCase();
@@ -452,7 +454,7 @@ function initDatabase(){
 		var profName = cleanStr(pname);
 
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
-     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar}]);
+     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr}]);
      		writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
      		console.log("#1");
      		return;
@@ -469,10 +471,10 @@ function initDatabase(){
      			}
      			profsWithLev.sort(function(a,b) {return (a.lev > b.lev) ? 1 : ((b.lev > a.lev) ? -1 : 0);} );
      			if (profsWithLev[0].lev > 4) {
-     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar}]);
+     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr}]);
      			} else {
      				var currentArr = firData["Departments"][dept][c]["Professors"][profsWithLev[0].prof];
-     				currentArr.push({arange:ar});
+     				currentArr.push({arange:ar,date:datestr});
      				writeData("Departments/" + dept + "/" + c + "/Professors/" + profsWithLev[0].prof,currentArr);
      			}
      			var usedNames = firData["Departments"][dept][c]["Names"];
@@ -491,7 +493,7 @@ function initDatabase(){
      	}
      	console.log("#3");
      	//Write full path, since the dept exists but not the course
-     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar}]);
+     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr}]);
      	writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
 
 
