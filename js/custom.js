@@ -222,8 +222,9 @@ function initDatabase(){
 	}
 
 	function setTable(page,data) {
+		let coursesPerPage = 16;
 
-		if (rightPageEnabled = (data.length > 18*(page+1))){
+		if (rightPageEnabled = (data.length > coursesPerPage*(page+1))){
 			$("#rightarrow").html("<img src=\"assets/rightpage.png\" style=\"height:20px;\">");
 		} else {
 			$("#rightarrow").html("<img src=\"assets/rightpagedis.png\" style=\"height:20px;\">");
@@ -246,13 +247,23 @@ function initDatabase(){
 		str += "</tr>"
 		str += "</thead>"
 		str += "<tbody>";
-		for (var i=page*18; i<18*(page+1); i++){
+		let maxProfLen = 27;
+		let maxCourseLen = 35;
+		for (var i=page*coursesPerPage; i<coursesPerPage*(page+1); i++){
 			if (i < data.length){				
 				str += "<tr>";
 				str += "<td>" + (i+1) + "</td>";
-				str += "<td>" + data[i]["profName"] + "</td>";
+				if (data[i]["profName"].length < maxProfLen){
+					str += "<td>" + data[i]["profName"] + "</td>";
+				} else {
+					str += "<td>" + data[i]["profName"].substring(0,maxProfLen-2) + "...</td>";
+				}
 				str += "<td>" + data[i]["id"] + "</td>";
-				str += "<td>" + data[i]["courseName"] + "</td>";
+				if (data[i]["courseName"].length < maxCourseLen){
+					str += "<td>" + data[i]["courseName"] + "</td>";
+				} else {
+					str += "<td>" + data[i]["courseName"].substring(0,maxCourseLen-2) + "...</td>";
+				}
 				str += "<td class=\"text-center\">" + data[i]["ar"] + "%</td>";
 				str += "</tr>";
 			} else {
@@ -397,11 +408,12 @@ function initDatabase(){
 			return false;
 		});
 
-		function submitData(profName,id,name,ar) {
+		function submitData(pname,id,name,ar) {
 			var idarr = id.split(' ');
 			var dept = idarr[0].toUpperCase();
 			var courseSig = idarr[1].toUpperCase();
 			var courseName = cleanStr(name);
+			var profName = cleanStr(pname);
 
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
      		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar}]);
