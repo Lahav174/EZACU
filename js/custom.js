@@ -28,9 +28,8 @@ function initDatabase(){
 	firebase.initializeApp(config);
 
 	console.log("Database read!");
-	//console.log(firebase.database().ref().child("Departments"));
-	 // console.log("The size of the array is " + objArr.length);
-	 // console.log("Element 377: " + cleanStr(objArr[377].name));
+	
+
 	 var ref = firebase.database().ref();
 	 ref.on("value", function(snapshot) {
 	 	this.firData = snapshot.val();
@@ -133,6 +132,12 @@ function initDatabase(){
 	 	$("#minCover").html(minLevel + "   <span class=\"caret\"></span>");
 	 	$("#maxCover").html(maxLevel + "   <span class=\"caret\"></span>");
 	 });
+
+	 return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
+			var data = snapshot.val();
+			let toWrite = data["Visits"];
+			writeData("Statistics/Visits",toWrite+1);
+		});
 	}
 
 	function filter(){
@@ -215,6 +220,12 @@ function initDatabase(){
 			return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
 		//console.log(datArr);
 		setTable(0,datArr);
+
+		return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
+			var data = snapshot.val();
+			let toWrite = data["Search-Queries"];
+			writeData("Statistics/Search-Queries",toWrite+1);
+		});
 	}
 
 	function nextPage() {
@@ -420,18 +431,18 @@ function initDatabase(){
 			return false;
 		});
 
-	function submitButtonPressed(){
+		function submitButtonPressed(){
 
-		let courseID = retrieveElement("course-id");
-		let splitID = courseID.split(' ');
+			let courseID = retrieveElement("course-id");
+			let splitID = courseID.split(' ');
 
-		let courseName = retrieveElement("course-name");
-		let profName = retrieveElement("prof-name");
-		let aRange = retrieveElement("a-range");
+			let courseName = retrieveElement("course-name");
+			let profName = retrieveElement("prof-name");
+			let aRange = retrieveElement("a-range");
 
-		if (splitID.length != 2 || (splitID[1].length != 4 && splitID[1].length != 5) || 
-			(splitID[0].length != 3 && splitID[0].length != 4)){
-			$("#submissionerror").html("Please enter the course ID in the correct format");
+			if (splitID.length != 2 || (splitID[1].length != 4 && splitID[1].length != 5) || 
+				(splitID[0].length != 3 && splitID[0].length != 4)){
+				$("#submissionerror").html("Please enter the course ID in the correct format");
 			return;
 		} 
 		if ((courseName.split(' ')).length < 2){
@@ -454,7 +465,13 @@ function initDatabase(){
 
 		submitData(profName,courseID,courseName,aRange,dateStr);
 
-		location.reload(false);
+		$("#submitdataform")[0].reset();
+
+		return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
+			var data = snapshot.val();
+			let submissions = data["Submissions"];
+			writeData("Statistics/Submissions",submissions+1);
+		});
 		
 	}
 
