@@ -180,6 +180,18 @@ function initDatabase(){
 				return false;
 			});
 		}
+		if (filterTechnical){
+			datArr = datArr.filter(function(e){
+				let id = e["id"].split(' ');
+				return $.inArray(id[0], techs) != -1;
+			});
+		}
+		if (filterNonTechnical){
+			datArr = datArr.filter(function(e){
+				let id = e["id"].split(' ');
+				return $.inArray(id[0], nontechs) != -1;
+			});
+		}
 		if (arFloor > 0){
 			datArr = datArr.filter(function(e){
 				return e["ar"] > (arFloor);
