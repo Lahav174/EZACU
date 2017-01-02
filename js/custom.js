@@ -408,12 +408,48 @@ function initDatabase(){
 			return false;
 		});
 
-		function submitData(pname,id,name,ar) {
-			var idarr = id.split(' ');
-			var dept = idarr[0].toUpperCase();
-			var courseSig = idarr[1].toUpperCase();
-			var courseName = cleanStr(name);
-			var profName = cleanStr(pname);
+	function submitButtonPressed(){
+			
+		let courseID = retrieveElement("course-id");
+		let splitID = courseID.split(' ');
+
+		let courseName = retrieveElement("course-name");
+		let profName = retrieveElement("prof-name");
+		let aRange = retrieveElement("a-range");
+
+		if (splitID.length != 2 || (splitID[1].length != 4 && splitID[1].length != 5) || 
+			(splitID[0].length != 3 && splitID[0].length != 4)){
+			$("#submissionerror").html("Please enter the course ID in the correct format");
+			return;
+		} 
+		if ((courseName.split(' ')).length < 2){
+			$("#submissionerror").html("Please enter the course name exactly as it is shown");
+			return;
+		} 
+		if ((profName.split(' ')).length < 2){
+			$("#submissionerror").html("Please enter the professor's name exactly as it is shown");
+			return;
+		} 
+		if (aRange.length == 0 || !($.isNumeric(aRange)) || Number(aRange) < 0 || Number(aRange) > 100){
+			$("#submissionerror").html("Please enter the A-Range in the correct format");
+			return;
+		}
+
+		$("#submissionerror").html("");
+
+		console.log("Submit!: " + courseID);
+	}
+
+	function isNumber(n) {
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
+	function submitData(pname,id,name,ar) {
+		var idarr = id.split(' ');
+		var dept = idarr[0].toUpperCase();
+		var courseSig = idarr[1].toUpperCase();
+		var courseName = cleanStr(name);
+		var profName = cleanStr(pname);
 
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
      		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar}]);
