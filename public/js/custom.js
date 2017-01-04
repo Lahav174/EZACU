@@ -2,8 +2,8 @@
 var firData;
 
 var filterGlobalCore = false;
-var filterTechnical = false
-var filterNonTechnical = false
+var filterTechnical = false;
+var filterNonTechnical = false;
 var minLevel = 1000;
 var maxLevel = 4000;
 var filterGold = false;
@@ -12,9 +12,8 @@ var filterSilver = false;
 var tableData = [];
 var pageNumber = 0;
 
-var leftPageEnabled = false
-var rightPageEnabled = false
-
+var leftPageEnabled = false;
+var rightPageEnabled = false;
 
 function initDatabase(){
 	console.log("Init Database called");
@@ -30,14 +29,14 @@ function initDatabase(){
 	console.log("Database read!");
 	
 
-	 var ref = firebase.database().ref();
-	 ref.on("value", function(snapshot) {
-	 	this.firData = snapshot.val();
-	 });
+	var ref = firebase.database().ref();
+	ref.on("value", function(snapshot) {
+		this.firData = snapshot.val();
+	});
 
-	 setTable(0,[]);
+	setTable(0,[]);
 
-	 jQuery("button").click(function(e){
+	jQuery("button").click(function(e){
 	 	//console.log(e.target.id);
 	 	switch (e.target.id) {
 	 		case "technical":
@@ -86,144 +85,144 @@ function initDatabase(){
 	 	}
 	 });
 
-	 jQuery(".dropBtn").click(function(e){
-	 	e.preventDefault();
-	 	switch (e.target.id) {
-	 		case "onekmin": 
-	 		minLevel = 1000;
-	 		break;
-	 		case "twokmin": 
-	 		minLevel = 2000;
-	 		break;
-	 		case "threekmin": 
-	 		minLevel = 3000;
-	 		break;
-	 		case "fourkmin": 
-	 		minLevel = 4000;
-	 		break;
-	 		case "fivekmin": 
-	 		minLevel = 5000;
-	 		break;
-	 		case "sixkmin": 
-	 		minLevel = 6000;
-	 		break;
-	 		case "onekmax": 
-	 		maxLevel = 1000;
-	 		break;
-	 		case "twokmax": 
-	 		maxLevel = 2000;
-	 		break;
-	 		case "threekmax": 
-	 		maxLevel = 3000;
-	 		break;
-	 		case "fourkmax": 
-	 		maxLevel = 4000;
-	 		break;
-	 		case "fivekmax": 
-	 		maxLevel = 5000;
-	 		break;
-	 		case "sixkmax": 
-	 		maxLevel = 6000;
-	 		break;
-	 		default:
-	 		alert("The target id is: " + e.target.id + ". This shouldn't happen.");
+	jQuery(".dropBtn").click(function(e){
+		e.preventDefault();
+		switch (e.target.id) {
+			case "onekmin": 
+			minLevel = 1000;
+			break;
+			case "twokmin": 
+			minLevel = 2000;
+			break;
+			case "threekmin": 
+			minLevel = 3000;
+			break;
+			case "fourkmin": 
+			minLevel = 4000;
+			break;
+			case "fivekmin": 
+			minLevel = 5000;
+			break;
+			case "sixkmin": 
+			minLevel = 6000;
+			break;
+			case "onekmax": 
+			maxLevel = 1000;
+			break;
+			case "twokmax": 
+			maxLevel = 2000;
+			break;
+			case "threekmax": 
+			maxLevel = 3000;
+			break;
+			case "fourkmax": 
+			maxLevel = 4000;
+			break;
+			case "fivekmax": 
+			maxLevel = 5000;
+			break;
+			case "sixkmax": 
+			maxLevel = 6000;
+			break;
+			default:
+			alert("The target id is: " + e.target.id + ". This shouldn't happen.");
 
-	 	}
-	 	$("#minCover").html(minLevel + "   <span class=\"caret\"></span>");
-	 	$("#maxCover").html(maxLevel + "   <span class=\"caret\"></span>");
-	 });
+		}
+		$("#minCover").html(minLevel + "   <span class=\"caret\"></span>");
+		$("#maxCover").html(maxLevel + "   <span class=\"caret\"></span>");
+	});
 
-	 return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
-			var data = snapshot.val();
-			let toWrite = data["Visits"];
-			writeData("Statistics/Visits",toWrite+1);
-		});
-	}
+	return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
+		var data = snapshot.val();
+		var toWrite = data["Visits"];
+		writeData("Statistics/Visits",toWrite+1);
+	});
+}
 
-	function filter(){
-		console.log("started filter");
-		var textParam = retrieveElement("textparam");
-		if (!textParam) {textParam = "";}
-		let arFloor = document.getElementById('myRange').value;
-		console.log(arFloor);
+function filter(){
+	console.log("started filter");
+	var textParam = retrieveElement("textparam");
+	if (!textParam) {textParam = "";}
+	var arFloor = document.getElementById('myRange').value;
+	console.log(arFloor);
 
-		
-		var datArr = searchDatabaseForSubstring(textParam);
-		if (filterGold || filterSilver){
-			datArr = datArr.filter(function(e){
-				let name = e["profName"];
-				if (filterGold){
-					for (var i = 0; i < goldNuggets["professors"].length; i++) {
-						let firstName = goldNuggets["professors"][i]["first_name"];
-						let lastName = goldNuggets["professors"][i]["last_name"];
-						if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
-							return true;
-						} 
-					}
-				} 
-				if (filterSilver){
-					for (var i = 0; i < silverNuggets["professors"].length; i++) {
-						let firstName = silverNuggets["professors"][i]["first_name"];
-						let lastName = silverNuggets["professors"][i]["last_name"];
-						if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
-							return true;
-						} 
-					}
-				}
-				return false;
-			});
-		} 
-		if (filterGlobalCore){
-			datArr = datArr.filter(function(e){
-				let id = e["id"].split(' ');
-				for (var i = 0; i < globalCores.length; i++) {
-					let gcID = globalCores[i];
-					if (gcID.indexOf(id[0]) >= 0 && gcID.indexOf(id[1]) >= 0){
+
+	var datArr = searchDatabaseForSubstring(textParam);
+	if (filterGold || filterSilver){
+		datArr = datArr.filter(function(e){
+			var name = e["profName"];
+			if (filterGold){
+				for (var i = 0; i < goldNuggets["professors"].length; i++) {
+					var firstName = goldNuggets["professors"][i]["first_name"];
+					var lastName = goldNuggets["professors"][i]["last_name"];
+					if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
 						return true;
 					} 
 				}
-				return false;
-			});
-		}
-		if (filterTechnical){
-			datArr = datArr.filter(function(e){
-				let id = e["id"].split(' ');
-				return $.inArray(id[0], techs) != -1;
-			});
-		}
-		if (filterNonTechnical){
-			datArr = datArr.filter(function(e){
-				let id = e["id"].split(' ');
-				return $.inArray(id[0], nontechs) != -1;
-			});
-		}
-		if (arFloor > 0){
-			datArr = datArr.filter(function(e){
-				return e["ar"] > (arFloor);
-			});
-		}
-		if (document.getElementById('levelcheckboxmin').checked) {
-			datArr = datArr.filter(function(e){
-				let sig = (e["id"].split(' '))[1];
-				return Number(sig.charAt(sig.length-4))*1000 >= minLevel;
-			});
-		}
-		if (document.getElementById('levelcheckboxmax').checked) {
-			datArr = datArr.filter(function(e){
-				let sig = (e["id"].split(' '))[1];
-				return Number(sig.charAt(sig.length-4))*1000 <= maxLevel;
-			});
-		}
-		
-		console.log("Done!");
-		datArr.sort(function(a,b) {
-			return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
+			} 
+			if (filterSilver){
+				for (var i = 0; i < silverNuggets["professors"].length; i++) {
+					var firstName = silverNuggets["professors"][i]["first_name"];
+					var lastName = silverNuggets["professors"][i]["last_name"];
+					if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
+						return true;
+					} 
+				}
+			}
+			return false;
+		});
+	} 
+	if (filterGlobalCore){
+		datArr = datArr.filter(function(e){
+			var id = e["id"].split(' ');
+			for (var i = 0; i < globalCores.length; i++) {
+				var gcID = globalCores[i];
+				if (gcID.indexOf(id[0]) >= 0 && gcID.indexOf(id[1]) >= 0){
+					return true;
+				} 
+			}
+			return false;
+		});
+	}
+	if (filterTechnical){
+		datArr = datArr.filter(function(e){
+			var id = e["id"].split(' ');
+			return $.inArray(id[0], techs) != -1;
+		});
+	}
+	if (filterNonTechnical){
+		datArr = datArr.filter(function(e){
+			var id = e["id"].split(' ');
+			return $.inArray(id[0], nontechs) != -1;
+		});
+	}
+	if (arFloor > 0){
+		datArr = datArr.filter(function(e){
+			return e["ar"] > (arFloor);
+		});
+	}
+	if (document.getElementById('levelcheckboxmin').checked) {
+		datArr = datArr.filter(function(e){
+			var sig = (e["id"].split(' '))[1];
+			return Number(sig.charAt(sig.length-4))*1000 >= minLevel;
+		});
+	}
+	if (document.getElementById('levelcheckboxmax').checked) {
+		datArr = datArr.filter(function(e){
+			var sig = (e["id"].split(' '))[1];
+			return Number(sig.charAt(sig.length-4))*1000 <= maxLevel;
+		});
+	}
+
+	console.log("Done!");
+	datArr.sort(function(a,b) {
+		return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
 		//console.log(datArr);
 		setTable(0,datArr);
 
 		return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
 			var data = snapshot.val();
-			let toWrite = data["Search-Queries"];
+			var toWrite = data["Search-Queries"];
 			writeData("Statistics/Search-Queries",toWrite+1);
 		});
 	}
@@ -245,7 +244,7 @@ function initDatabase(){
 	}
 
 	function setTable(page,data) {
-		let coursesPerPage = 16;
+		var coursesPerPage = 16;
 
 		if (rightPageEnabled = (data.length > coursesPerPage*(page+1))){
 			$("#rightarrow").html("<img src=\"assets/rightpage.png\" style=\"height:20px;\">");
@@ -270,8 +269,8 @@ function initDatabase(){
 		str += "</tr>"
 		str += "</thead>"
 		str += "<tbody>";
-		let maxProfLen = 27;
-		let maxCourseLen = 35;
+		var maxProfLen = 27;
+		var maxCourseLen = 35;
 		for (var i=page*coursesPerPage; i<coursesPerPage*(page+1); i++){
 			if (i < data.length){				
 				str += "<tr>";
@@ -321,7 +320,7 @@ function initDatabase(){
 	}
 
 	function sliderUpdate(){
-		let arFloor = document.getElementById('myRange').value;
+		var arFloor = document.getElementById('myRange').value;
 		$("#sliderSubLabel").html("<xsall>At least <b>" + arFloor + "%</b> of students got As</xsall>");
 	}
 
@@ -347,6 +346,8 @@ function initDatabase(){
 		
 	}
 
+
+
 	function searchDatabaseForSubstring(substring){
 		
 		var searchText = substring.toLowerCase();
@@ -363,7 +364,7 @@ function initDatabase(){
 							var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
 							var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
 							return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
-						let mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+						var mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
 						var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
 						for (var k = profNames.length - 1; k >= 0; k--) {
 							var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
@@ -384,7 +385,7 @@ function initDatabase(){
 								var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
 								var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
 								return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
-							let mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+							var mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
 							var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
 							for (var k = profNames.length - 1; k >= 0; k--) {
 								var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
@@ -407,7 +408,7 @@ function initDatabase(){
 								var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
 								var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
 								return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
-							let mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+							var mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
 							var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
 							for (var k = profNames.length - 1; k >= 0; k--) {
 								if (foundCourseNameWithSubstring || (profNames[k].toLowerCase()).indexOf(searchText) >= 0){
@@ -431,20 +432,30 @@ function initDatabase(){
 			return false;
 		});
 
+
+
+
+
+
+
+
 		function submitButtonPressed(){
 
-			let courseID = retrieveElement("course-id");
-			let splitID = courseID.split(' ');
+			var courseID = retrieveElement("course-id");
+			
+			var splitID = courseID.split(' ');
 
-			let courseName = retrieveElement("course-name");
-			let profName = retrieveElement("prof-name");
-			let aRange = retrieveElement("a-range");
+
+			var courseName = retrieveElement("course-name");
+			var profName = retrieveElement("prof-name");
+			var aRange = retrieveElement("a-range");
 
 			if (splitID.length != 2 || (splitID[1].length != 4 && splitID[1].length != 5) || 
 				(splitID[0].length != 3 && splitID[0].length != 4)){
 				$("#submissionerror").html("Please enter the course ID in the correct format");
 			return;
 		} 
+
 		if ((courseName.split(' ')).length < 2){
 			$("#submissionerror").html("Please enter the course name exactly as it is shown");
 			return;
@@ -461,7 +472,7 @@ function initDatabase(){
 		$("#submissionerror").html("");
 
 		var date = new Date();
-		var dateStr = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+		var dateStr = date.toLocaleDateString() + " " + date.toLocavarimeString();
 
 		submitData(profName,courseID,courseName,aRange,dateStr);
 
@@ -469,11 +480,16 @@ function initDatabase(){
 
 		return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
 			var data = snapshot.val();
-			let submissions = data["Submissions"];
+			var submissions = data["Submissions"];
 			writeData("Statistics/Submissions",submissions+1);
 		});
 		
 	}
+
+
+
+
+	
 
 	function submitData(pname,id,name,ar,datestr) {
 		var idarr = id.split(' ');
@@ -525,9 +541,8 @@ function initDatabase(){
      	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr}]);
      	writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
 
-
-
      }
+
 
      function retrieveElement(id) {
      	var txtbox = document.getElementById(id);
@@ -537,14 +552,6 @@ function initDatabase(){
      function writeData(path,obj) {
      	firebase.database().ref().child(path).set(obj);
      }
-
-
-
-
-
-
-
-
 
 
 
