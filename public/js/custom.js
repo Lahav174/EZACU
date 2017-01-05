@@ -46,6 +46,10 @@ function initDatabase(){
 	 			document.getElementById("technical").className = "btn btn-lg col-xs-12 glowing";
 	 		}
 	 		filterTechnical = !filterTechnical;
+	 		filterNonTechnical = false;
+	 		document.getElementById("nontechnical").className = "btn btn-lg col-xs-12 top15";
+	 		filterGlobalCore = false;
+	 		document.getElementById("globalcore").className = "btn btn-lg col-xs-12 top15";
 	 		break;
 	 		case "nontechnical":
 	 		if (filterNonTechnical){
@@ -54,6 +58,10 @@ function initDatabase(){
 	 			document.getElementById("nontechnical").className = "btn btn-lg col-xs-12 top15 glowing";
 	 		}
 	 		filterNonTechnical = !filterNonTechnical;
+	 		filterTechnical = false;
+	 		document.getElementById("technical").className = "btn btn-lg col-xs-12";
+	 		filterGlobalCore = false;
+	 		document.getElementById("globalcore").className = "btn btn-lg col-xs-12 top15";
 	 		break;
 	 		case "globalcore":
 	 		if (filterGlobalCore){
@@ -62,6 +70,10 @@ function initDatabase(){
 	 			document.getElementById("globalcore").className = "btn btn-lg col-xs-12 top15 glowing";
 	 		}
 	 		filterGlobalCore = !filterGlobalCore;
+	 		filterTechnical = false;
+	 		document.getElementById("technical").className = "btn btn-lg col-xs-12";
+	 		filterNonTechnical = false;
+	 		document.getElementById("nontechnical").className = "btn btn-lg col-xs-12 top15";
 	 		break;
 	 		case "goldnuggetbtn":
 	 		case "goldnuggetimg":
@@ -219,6 +231,12 @@ function filter(){
 		return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
 		//console.log(datArr);
 		setTable(0,datArr);
+
+		if (datArr.length > 0){
+			$("#tableerror").html("");
+		} else {
+			$("#tableerror").html("<b>No results matched your search</b>");
+		}
 
 		return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
 			var data = snapshot.val();
