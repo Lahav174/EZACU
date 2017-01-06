@@ -231,6 +231,7 @@ function filter(){
 		return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
 		//console.log(datArr);
 		setTable(0,datArr);
+		$("#searchres").html("<font color=\"grey\"><b>("+ datArr.length +" Results)</b></font>");
 
 		if (datArr.length > 0){
 			$("#tableerror").html("");
@@ -349,13 +350,16 @@ function filter(){
 		if (searchText.length == 0) {
 			$("#tableerror").html("");
 			setTable(0,[]);
+			$("#searchres").html("<font color=\"grey\"><b>Search Results</b></font>");
 		} else if (searchText.length < 3){
 			$("#tableerror").html("<b>Search must be at least 3 characters long</b>");
 			setTable(0,[]);
+			$("#searchres").html("<font color=\"grey\"><b>Search Results</b></font>");
 		} else {
 			var matching = searchDatabaseForSubstring(searchText);
 			matching.sort(function(a,b) { return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
 			setTable(0,matching);
+			$("#searchres").html("<font color=\"grey\"><b>("+ matching.length +" Results)</b></font>");
 			if (matching.length > 0){
 				$("#tableerror").html("");
 			} else {
