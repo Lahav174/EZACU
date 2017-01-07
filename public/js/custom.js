@@ -512,7 +512,6 @@ function filter(){
 
 		var date = new Date();
 		var dateStr = date.toLocaleDateString() + " " + date.toLocaleTimeString();
-		console.log("LAHAv");
 		submitData(profName,courseID,courseName,aRange,dateStr);
 
 		$("#submitdataform")[0].reset();
