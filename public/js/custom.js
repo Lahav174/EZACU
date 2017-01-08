@@ -536,6 +536,10 @@ function filter(){
 		var courseName = cleanStr(name);
 		var profName = cleanStr(pname);
 
+		var subVerbArr = firData["Statistics"]["Submissions-Verb"];
+		subVerbArr.push(dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)");
+		writeData("Statistics/Submissions-Verb",subVerbArr);
+
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
      		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr}]);
      		writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
