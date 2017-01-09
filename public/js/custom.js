@@ -31,10 +31,12 @@ function initDatabase(){
 
 	console.log("Database read!");
 	
+	document.getElementById("submitquery").disabled = true;
 
 	var ref = firebase.database().ref();
 	ref.on("value", function(snapshot) {
 		this.firData = snapshot.val();
+		document.getElementById("submitquery").disabled = false;
 	});
 
 	setTable(0,[]);
