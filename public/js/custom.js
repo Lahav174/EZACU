@@ -674,3 +674,10 @@ for (var i = 1; i <= n; i++) {
     // Step 7
     return d[n][m];
 }
+
+function checkEnter(e) {
+	if(e.keyCode === 13){
+            e.preventDefault(); // Ensure it is only this code that rusn
+            filter();
+        }
+}
