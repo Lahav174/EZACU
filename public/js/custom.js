@@ -149,6 +149,8 @@ function initDatabase(){
 		$("#maxCover").html(maxLevel + "   <span class=\"caret\"></span>");
 	});
 
+	
+
 	window.addEventListener("beforeunload", function(e){
 		var searchBarText = retrieveElement("searchbar");
 		if (searchBarText.length > 3){
@@ -357,9 +359,9 @@ function filter(){
 		$("#sliderSubLabel").html("<xsall>At least <b>" + arFloor + "%</b> of students got As</xsall>");
 	}
 
-	function searchKeyDown(){	
-		var input = document.getElementById('searchbar');
-		var key = event.keyCode || event.charCode;
+	$( "#searchbar" ).keydown(function(event) {
+  		var input = document.getElementById('searchbar');
+		var key = event.which;
 		if (key == 8 && numBackspace == 0){
 			savedSearch = (retrieveElement("searchbar")).trim();
 			numBackspace++;
@@ -373,7 +375,7 @@ function filter(){
 		} else {
 			numBackspace = 0;
 		}
-	}
+	});
 
 	function searchChange(){
 		var searchText = retrieveElement("searchbar")
