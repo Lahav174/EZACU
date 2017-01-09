@@ -498,6 +498,10 @@ function filter(){
 			return false;
 		});
 
+		$("#filterform").submit(function() {
+			return false;
+		});
+
 
 
 
