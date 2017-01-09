@@ -157,7 +157,7 @@ function initDatabase(){
 	return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
 		var data = snapshot.val();
 		var toWrite = data["Visits"];
-		//writeData("Statistics/Visits",toWrite+1);
+		writeData("Statistics/Visits",toWrite+1);
 	});
 }
 
