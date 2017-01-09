@@ -1,6 +1,9 @@
 
 var firData;
 
+var savedSearch = "nil";
+var numBackspace = 0;
+
 var filterGlobalCore = false;
 var filterTechnical = false;
 var filterNonTechnical = false;
@@ -144,10 +147,17 @@ function initDatabase(){
 		$("#maxCover").html(maxLevel + "   <span class=\"caret\"></span>");
 	});
 
+	window.addEventListener("beforeunload", function(e){
+		var searchBarText = retrieveElement("searchbar");
+		if (searchBarText.length > 3){
+			writeData("Statistics/Searches/" + Date.now(),searchBarText);
+		}
+	}, false);
+
 	return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
 		var data = snapshot.val();
 		var toWrite = data["Visits"];
-		writeData("Statistics/Visits",toWrite+1);
+		//writeData("Statistics/Visits",toWrite+1);
 	});
 }
 
@@ -345,6 +355,24 @@ function filter(){
 		$("#sliderSubLabel").html("<xsall>At least <b>" + arFloor + "%</b> of students got As</xsall>");
 	}
 
+	function searchKeyDown(){	
+		var input = document.getElementById('searchbar');
+		var key = event.keyCode || event.charCode;
+		if (key == 8 && numBackspace == 0){
+			savedSearch = (retrieveElement("searchbar")).trim();
+			numBackspace++;
+		} else if (key == 8 && numBackspace != 2){
+			numBackspace++;
+		} else if (key == 8 && numBackspace == 2){
+			if (savedSearch.length > 3){
+				writeData("Statistics/Searches/" + Date.now(),savedSearch);
+			}
+			numBackspace++;
+		} else {
+			numBackspace = 0;
+		}
+	}
+
 	function searchChange(){
 		var searchText = retrieveElement("searchbar")
 		if (searchText.length == 0) {
@@ -366,10 +394,7 @@ function filter(){
 				$("#tableerror").html("<b>No results matched your search</b>");
 			}
 		}
-
-		
 	}
-
 
 
 	function searchDatabaseForSubstring(substring){
