@@ -587,7 +587,12 @@ function filter(){
      			var profs = Object.keys(firData["Departments"][dept][c]["Professors"])
      			var profsWithLev = [];
      			for (var i = profs.length - 1; i >= 0; i--) {
-     				profsWithLev.push({prof: profs[i],lev:levDist(profs[i].toLowerCase(),profName.toLowerCase())});
+     				var splitProfName = profName.toLowerCase().split(' ');
+     				if (splitProfName.length == 2 && profs[i].split(' ').length > 2 && profs[i].toLowerCase().indexOf(splitProfName[0]) != -1 && profs[i].toLowerCase().indexOf(splitProfName[1]) != -1){
+     					profsWithLev.push({prof: profs[i],lev:0});
+     				} else {
+     					profsWithLev.push({prof: profs[i],lev:levDist(profs[i].toLowerCase(),profName.toLowerCase())});
+     				}
      			}
      			profsWithLev.sort(function(a,b) {return (a.lev > b.lev) ? 1 : ((b.lev > a.lev) ? -1 : 0);} );
      			if (profsWithLev[0].lev > 4) {
