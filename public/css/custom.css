@@ -4,6 +4,12 @@
 	width: 180px;
 }
 
+#fbbtn {
+	padding-left: 0px;
+	padding-right: 0px;
+	margin-top: 55px;
+}
+
 #paramheader {
 	font-size: medium;
 	margin-bottom: 6px;

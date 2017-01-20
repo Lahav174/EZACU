@@ -39,6 +39,11 @@ function initDatabase(){
 		document.getElementById("submitquery").disabled = false;
 	});
 
+	ref.on("value", function(snapshot) {
+		var database = snapshot.val();
+		$("#message").html("<b>" + database["Z-Message"] + "</b>");
+	});
+
 	setTable(0,[]);
 
 	jQuery("button").click(function(e){
