@@ -538,7 +538,7 @@ function filter(){
 			return;
 		} 
 		if ((profName.split(' ')).length < 2){
-			$("#submissionerror").html("Please enter the professor's name exactly as it is shown");
+			$("#submissionerror").html("Please enter the full name of the professor");
 			return;
 		} 
 		if (aRange.length == 0 || !($.isNumeric(aRange)) || Number(aRange) < 0 || Number(aRange) > 100){
