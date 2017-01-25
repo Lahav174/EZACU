@@ -176,7 +176,9 @@ function filter(){
 	if (!textParam) {textParam = "";}
 	var arFloor = document.getElementById('myRange').value;
 	console.log(arFloor);
-
+	if (textParam.length > 3){
+		writeData("Statistics/Searches/" + Date.now(),textParam + " - F");
+	}
 
 	var datArr = searchDatabaseForSubstring(textParam);
 	if (filterGold || filterSilver){
