@@ -43,6 +43,118 @@
 <div id="mainrow container">
 	<div class="row center-inner" id="innermainrow">
 		<div>
+				<div class="col-xs-5 top45 container" id="rightcollumn">
+					<div class="col-xs-10 col-xs-push-1">
+						<div class="row">
+							<div class="row text-center" style="font-size: medium; font-face: 'Arial">
+								You can search a specific course <b>here</b>
+							</div>
+						</div>
+						<div class="row text-center top7" style="color:#5D5D5D; font-size: small; font-face: 'HelveticNeue">
+							<div>Results will automatically appear in the table</div>
+						</div>
+						<div class="row top7">
+							<form class="form-horizontal" id="searchForm">
+								<input type="text" oninput="searchChange()" style="font-size: 10pt" class="form-control" id="searchbar" placeholder="Search...">
+							</form>
+						</div>
+						<div class="row top60">
+							<div id="submission">
+								<div class="row">
+									<div class="text-center top15" style="font-size: 15pt; font-face: 'HelveticNeue">
+										<b>Submit your A-ranges</b>
+									</div>
+								</div>
+								<div class="row center-inner">
+									<a style="color:#8224D5;" href="./instructions.html" target="_blank"><u><small>Where do I find my A-Ranges?</small></u></a>
+								</div>
+								<div id="submissionerror" class="row center-inner top10" style="color:#D0011B; font-size: 8pt;">
+								
+								</div>
+								<div>
+									<form class="form-horizontal" id="submitdataform">
+										<div class="form-group top10">
+											<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
+												Course ID
+											</div>
+											<div class="col-xs-8 col-xs-push-1">
+												<input type="text" style="font-size: 11pt" class="form-control" id="course-id" placeholder="e.g. COMS W1006">
+											</div>
+										</div>
+										<div class="form-group top15">
+											<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
+												Course Name
+											</div>
+											<div class="col-xs-10 col-xs-push-1">
+												<input type="text" style="font-size: 11pt" class="form-control" id="course-name" placeholder="e.g. Principles of Economics">
+											</div>
+										</div>
+										<div class="form-group top15">
+											<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
+												Professor Name
+											</div>
+											<div class="col-xs-10 col-xs-push-1">
+												<input type="text" style="font-size: 11pt" class="form-control" id="prof-name" placeholder="e.g. Sunil Gulati">
+											</div>
+										</div>
+										<div class="form-group top15">
+											<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
+												A-Range (%)
+											</div>
+											<div class="col-xs-5 col-xs-push-1 bottom15">
+												<input type="text" style="font-size: 11pt" class="form-control" id="a-range" placeholder="e.g. 43">
+											</div>
+											<div class="col-xs-4 col-xs-push-1 bottom15">
+												<button type="button" onclick="submitButtonPressed();" class="btn btn-lg" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="submitdata">Submit</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div id="emailprompt" class="text-center row"><i>~ I made this website. If you would like</i></div>
+							<div id="emailprompt" class="text-center row"><i>to contact me, please email me at</i></div>
+							<div id="emailprompt" class="text-center row top5"><a style="color:black;" href="mailto:lol2107@columbia.edu"><b>lol2107@columbia.edu</b></a></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<div class="col-xs-7 left30">
+			<div class="panel panel-default" id="tablepanel">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-xs-4 top4" id="searchres"><font color="grey"><b>Search Results</b></font></div>
+						<div class="right30 pull-right">
+							<button class="arrowbtn" id="leftarrow" onclick="lastPage()"><img src="assets/leftpagedis.png" style="height:20px;"></button>
+							<label class="left15" id="pagenum">Page 1</label>
+							<button class="arrowbtn" id="rightarrow" onclick="nextPage()"><img src="assets/rightpagedis.png" style="height:20px;"></button>
+							</div>
+						</div>
+					</div>
+					<div class="panel-body">
+						<div>
+							Only classes we have A-Range data for are included. Please submit your own 
+							A-Ranges to help increase our database! <small><i>Note:</i> There may be duplicates since course IDs change over time.</small>
+						</div>
+						<div class="text-center" id="tableerror" style="color:#FFD438; font-size: small; font-face: 'HelveticNeue"></div>
+					</div>
+					<div class="table-responsive">
+						<table class="table" id="datatable">
+							<thead>
+								<tr class="active">
+									<th>#</th>
+									<th>Professor</th>
+									<th>Course ID</th>
+									<th>Course Name</th>
+									<th>A-Range</th>
+								</tr>
+							</thead>
+							<tbody>								
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div>
 			<div class="col-xs-2" id="filter">
 				<form class="form-horizontal" id="filterform">
 					<label class="h4 text-center top15">Want to boost your GPA?</label>
@@ -162,118 +274,6 @@
 				</form>
 			</div>
 		</div>
-		<div class="col-xs-7 left30">
-			<div class="panel panel-default" id="tablepanel">
-				<div class="panel-heading">
-					<div class="row">
-						<div class="col-xs-4 top4" id="searchres"><font color="grey"><b>Search Results</b></font></div>
-						<div class="right30 pull-right">
-							<button class="arrowbtn" id="leftarrow" onclick="lastPage()"><img src="assets/leftpagedis.png" style="height:20px;"></button>
-							<label class="left15" id="pagenum">Page 1</label>
-							<button class="arrowbtn" id="rightarrow" onclick="nextPage()"><img src="assets/rightpagedis.png" style="height:20px;"></button>
-							</div>
-						</div>
-					</div>
-					<div class="panel-body">
-						<div>
-							Only classes we have A-Range data for are included. Please submit your own 
-							A-Ranges to help increase our database! <small><i>Note:</i> There may be duplicates since course IDs change over time.</small>
-						</div>
-						<div class="text-center" id="tableerror" style="color:#FFD438; font-size: small; font-face: 'HelveticNeue"></div>
-					</div>
-					<div class="table-responsive">
-						<table class="table" id="datatable">
-							<thead>
-								<tr class="active">
-									<th>#</th>
-									<th>Professor</th>
-									<th>Course ID</th>
-									<th>Course Name</th>
-									<th>A-Range</th>
-								</tr>
-							</thead>
-							<tbody>								
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div>
-				<div class="col-xs-5 top45 container" id="rightcollumn">
-					<div class="col-xs-10 col-xs-push-1">
-						<div class="row">
-							<div class="row text-center" style="font-size: medium; font-face: 'Arial">
-								You can search a specific course <b>here</b>
-							</div>
-						</div>
-						<div class="row text-center top7" style="color:#5D5D5D; font-size: small; font-face: 'HelveticNeue">
-							<div>Results will automatically appear in the table</div>
-						</div>
-						<div class="row top7">
-							<form class="form-horizontal" id="searchForm">
-								<input type="text" oninput="searchChange()" style="font-size: 10pt" class="form-control" id="searchbar" placeholder="Search...">
-							</form>
-						</div>
-						<div class="row top60">
-							<div id="submission">
-								<div class="row">
-									<div class="text-center top15" style="font-size: 15pt; font-face: 'HelveticNeue">
-										<b>Submit your A-ranges</b>
-									</div>
-								</div>
-								<div class="row center-inner">
-									<a style="color:#8224D5;" href="./instructions.html" target="_blank"><u><small>Where do I find my A-Ranges?</small></u></a>
-								</div>
-								<div id="submissionerror" class="row center-inner top10" style="color:#D0011B; font-size: 8pt;">
-								
-								</div>
-								<div>
-									<form class="form-horizontal" id="submitdataform">
-										<div class="form-group top10">
-											<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
-												Course ID
-											</div>
-											<div class="col-xs-8 col-xs-push-1">
-												<input type="text" style="font-size: 11pt" class="form-control" id="course-id" placeholder="e.g. COMS W1006">
-											</div>
-										</div>
-										<div class="form-group top15">
-											<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
-												Course Name
-											</div>
-											<div class="col-xs-10 col-xs-push-1">
-												<input type="text" style="font-size: 11pt" class="form-control" id="course-name" placeholder="e.g. Principles of Economics">
-											</div>
-										</div>
-										<div class="form-group top15">
-											<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
-												Professor Name
-											</div>
-											<div class="col-xs-10 col-xs-push-1">
-												<input type="text" style="font-size: 11pt" class="form-control" id="prof-name" placeholder="e.g. Sunil Gulati">
-											</div>
-										</div>
-										<div class="form-group top15">
-											<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
-												A-Range (%)
-											</div>
-											<div class="col-xs-5 col-xs-push-1 bottom15">
-												<input type="text" style="font-size: 11pt" class="form-control" id="a-range" placeholder="e.g. 43">
-											</div>
-											<div class="col-xs-4 col-xs-push-1 bottom15">
-												<button type="button" onclick="submitButtonPressed();" class="btn btn-lg" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="submitdata">Submit</button>
-											</div>
-										</div>
-									</form>
-								</div>
-							</div>
-							<div id="emailprompt" class="text-center row"><i>~ I made this website. If you would like</i></div>
-							<div id="emailprompt" class="text-center row"><i>to contact me, please email me at</i></div>
-							<div id="emailprompt" class="text-center row top5"><a style="color:black;" href="mailto:lol2107@columbia.edu"><b>lol2107@columbia.edu</b></a></div>
-						</div>
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 </div>
