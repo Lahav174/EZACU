@@ -39,10 +39,9 @@
 			</div>
 		</div>
 	</div>
-</div>
-<div id="mainrow container">
-	<div class="row center-inner" id="innermainrow">
-		
+	<div id="mainrow container">
+		<div class="row center-inner" id="innermainrow">
+			
 			<div class="col-xs-5 top45 container randompink" id="rightcollumn">
 				<div class="col-xs-10 col-xs-push-1">
 					<div class="row">
@@ -69,47 +68,47 @@
 								<a style="color:#8224D5;" href="./instructions.html" target="_blank"><u><small>Where do I find my A-Ranges?</small></u></a>
 							</div>
 							<div id="submissionerror" class="row center-inner top10" style="color:#D0011B; font-size: 8pt;">
-								
+
 							</div>
-							<div>
-								<form class="form-horizontal" id="submitdataform">
-									<div class="form-group top10">
-										<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
-											Course ID
-										</div>
-										<div class="col-xs-8 col-xs-push-1">
-											<input type="text" style="font-size: 11pt" class="form-control" id="course-id" placeholder="e.g. COMS W1006">
-										</div>
+							
+							<form class="form-horizontal" id="submitdataform">
+								<div class="form-group top10">
+									<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
+										Course ID
 									</div>
-									<div class="form-group top15">
-										<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
-											Course Name
-										</div>
-										<div class="col-xs-10 col-xs-push-1">
-											<input type="text" style="font-size: 11pt" class="form-control" id="course-name" placeholder="e.g. Principles of Economics">
-										</div>
+									<div class="col-xs-8 col-xs-push-1">
+										<input type="text" style="font-size: 11pt" class="form-control" id="course-id" placeholder="e.g. COMS W1006">
 									</div>
-									<div class="form-group top15">
-										<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
-											Professor Name
-										</div>
-										<div class="col-xs-10 col-xs-push-1">
-											<input type="text" style="font-size: 11pt" class="form-control" id="prof-name" placeholder="e.g. Sunil Gulati">
-										</div>
+								</div>
+								<div class="form-group top15">
+									<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
+										Course Name
 									</div>
-									<div class="form-group top15">
-										<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
-											A-Range (%)
-										</div>
-										<div class="col-xs-5 col-xs-push-1 bottom15">
-											<input type="text" style="font-size: 11pt" class="form-control" id="a-range" placeholder="e.g. 43">
-										</div>
-										<div class="col-xs-4 col-xs-push-1 bottom15">
-											<button type="button" onclick="submitButtonPressed();" class="btn btn-lg" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="submitdata">Submit</button>
-										</div>
+									<div class="col-xs-10 col-xs-push-1">
+										<input type="text" style="font-size: 11pt" class="form-control" id="course-name" placeholder="e.g. Principles of Economics">
 									</div>
-								</form>
-							</div>
+								</div>
+								<div class="form-group top15">
+									<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
+										Professor Name
+									</div>
+									<div class="col-xs-10 col-xs-push-1">
+										<input type="text" style="font-size: 11pt" class="form-control" id="prof-name" placeholder="e.g. Sunil Gulati">
+									</div>
+								</div>
+								<div class="form-group top15">
+									<div class="col-xs-12 col-xs-push-1" style="font-size: 13pt" id="paramheader">
+										A-Range (%)
+									</div>
+									<div class="col-xs-5 col-xs-push-1 bottom15">
+										<input type="text" style="font-size: 11pt" class="form-control" id="a-range" placeholder="e.g. 43">
+									</div>
+									<div class="col-xs-4 col-xs-push-1 bottom15">
+										<button type="button" onclick="submitButtonPressed();" class="btn btn-lg" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="submitdata">Submit</button>
+									</div>
+								</div>
+							</form>
+							
 						</div>
 						<div id="emailprompt" class="text-center row"><i>~ I made this website. If you would like</i></div>
 						<div id="emailprompt" class="text-center row"><i>to contact me, please email me at</i></div>
@@ -117,165 +116,165 @@
 					</div>
 				</div>
 			</div>
-		
-		<div class="col-xs-7 randomblue">
-			<div class="panel panel-default" id="tablepanel">
-				<div class="panel-heading">
-					<div class="row">
-						<div class="col-xs-4 top4" id="searchres"><font color="grey"><b>Search Results</b></font></div>
-						<div class="right30 pull-right">
-							<button class="arrowbtn" id="leftarrow" onclick="lastPage()"><img src="assets/leftpagedis.png" style="height:20px;"></button>
-							<label class="left15" id="pagenum">Page 1</label>
-							<button class="arrowbtn" id="rightarrow" onclick="nextPage()"><img src="assets/rightpagedis.png" style="height:20px;"></button>
+			
+			<div class="col-xs-7 randomblue">
+				<div class="panel panel-default" id="tablepanel">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-4 top4" id="searchres"><font color="grey"><b>Search Results</b></font></div>
+							<div class="right30 pull-right">
+								<button class="arrowbtn" id="leftarrow" onclick="lastPage()"><img src="assets/leftpagedis.png" style="height:20px;"></button>
+								<label class="left15" id="pagenum">Page 1</label>
+								<button class="arrowbtn" id="rightarrow" onclick="nextPage()"><img src="assets/rightpagedis.png" style="height:20px;"></button>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="panel-body">
-					<div>
-						Only classes we have A-Range data for are included. Please submit your own 
-						A-Ranges to help increase our database! <small><i>Note:</i> There may be duplicates since course IDs change over time.</small>
+					<div class="panel-body">
+						<div>
+							Only classes we have A-Range data for are included. Please submit your own 
+							A-Ranges to help increase our database! <small><i>Note:</i> There may be duplicates since course IDs change over time.</small>
+						</div>
+						<div class="text-center" id="tableerror" style="color:#FFD438; font-size: small; font-face: 'HelveticNeue"></div>
 					</div>
-					<div class="text-center" id="tableerror" style="color:#FFD438; font-size: small; font-face: 'HelveticNeue"></div>
-				</div>
-				<div class="table-responsive">
-					<table class="table" id="datatable">
-						<thead>
-							<tr class="active">
-								<th>#</th>
-								<th>Professor</th>
-								<th>Course ID</th>
-								<th>Course Name</th>
-								<th>A-Range</th>
-							</tr>
-						</thead>
-						<tbody>								
-						</tbody>
-					</table>
+					<div class="table-responsive">
+						<table class="table" id="datatable">
+							<thead>
+								<tr class="active">
+									<th>#</th>
+									<th>Professor</th>
+									<th>Course ID</th>
+									<th>Course Name</th>
+									<th>A-Range</th>
+								</tr>
+							</thead>
+							<tbody>								
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div>
-			<div class="col-xs-2" id="filter">
-				<form class="form-horizontal" id="filterform">
-					<label class="h4 text-center top15">Want to boost your GPA?</label>
-					<div class="form-group top15">
-						<div class="col-xs-12 text-center" id="paramheader">
-							Text Filter
-						</div>
-						<div class="col-xs-12">
-							<input type="text" style="font-size: 8.5pt" class="form-control" id="textparam" placeholder="e.g. “ECON” or “PHYS”">
-						</div>
-						<div class="col-xs-10 col-xs-push-1 text-center" id="paramnote">
-							<xsall>FYI: The other textfield will search as you type. This wont.</xsall>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12 bottom15">
-							<button type="button" class="btn btn-lg col-xs-12" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="technical">Technical</button>
-							<button type="button" class="btn btn-lg col-xs-12 top15" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="nontechnical">Non-Tech</button>
-							<button type="button" class="btn btn-lg col-xs-12 top15" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="globalcore">Global Core</button>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12 container">
-							<div class="row">
-								<div class="col-xs-12 text-center filtersectionheader" id="courselevellabel">
-									Course Level
-								</div>
+			<div class="randompink">
+				<div class="col-xs-2" id="filter">
+					<form class="form-horizontal" id="filterform">
+						<label class="h4 text-center top15">Want to boost your GPA?</label>
+						<div class="form-group top15">
+							<div class="col-xs-12 text-center" id="paramheader">
+								Text Filter
 							</div>
-							<div class="row">
-								<div class="col-xs-5"> <!--Minimum level-->
-									<div class="row">
-										<div class="checkbox center-inner">
-											<label><input type="checkbox" id="levelcheckboxmin"><xsall>Min</xsall></label>
-										</div>
-									</div>
-									<div class="row">
-										<div class="dropdown center-inner">
-											<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="minCover">1000
-												<span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu">
-												<li><a href="#" id="onekmin" class="dropBtn">1000</a></li>
-												<li><a href="#" id="twokmin" class="dropBtn">2000</a></li>
-												<li><a href="#" id="threekmin" class="dropBtn">3000</a></li>
-												<li><a href="#" id="fourkmin" class="dropBtn">4000</a></li>
-												<li><a href="#" id="fivekmin" class="dropBtn">5000</a></li>
-												<li><a href="#" id="sixkmin" class="dropBtn">6000</a></li>
-											</ul>
-										</div>
+							<div class="col-xs-12">
+								<input type="text" style="font-size: 8.5pt" class="form-control" id="textparam" placeholder="e.g. “ECON” or “PHYS”">
+							</div>
+							<div class="col-xs-10 col-xs-push-1 text-center" id="paramnote">
+								<xsall>FYI: The other textfield will search as you type. This wont.</xsall>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-xs-12 bottom15">
+								<button type="button" class="btn btn-lg col-xs-12" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="technical">Technical</button>
+								<button type="button" class="btn btn-lg col-xs-12 top15" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="nontechnical">Non-Tech</button>
+								<button type="button" class="btn btn-lg col-xs-12 top15" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="globalcore">Global Core</button>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-xs-12 container">
+								<div class="row">
+									<div class="col-xs-12 text-center filtersectionheader" id="courselevellabel">
+										Course Level
 									</div>
 								</div>
-								<div class="center-text col-xs-2 top45" id="shorthline"></div>
-								<div class="col-xs-5"> <!--Minimum level-->
-									<div class="row">
-										<div class="checkbox center-inner">
-											<label><input type="checkbox" id="levelcheckboxmax"><xsall>Max</xsall></label>
+								<div class="row">
+									<div class="col-xs-5"> <!--Minimum level-->
+										<div class="row">
+											<div class="checkbox center-inner">
+												<label><input type="checkbox" id="levelcheckboxmin"><xsall>Min</xsall></label>
+											</div>
+										</div>
+										<div class="row">
+											<div class="dropdown center-inner">
+												<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="minCover">1000
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li><a href="#" id="onekmin" class="dropBtn">1000</a></li>
+													<li><a href="#" id="twokmin" class="dropBtn">2000</a></li>
+													<li><a href="#" id="threekmin" class="dropBtn">3000</a></li>
+													<li><a href="#" id="fourkmin" class="dropBtn">4000</a></li>
+													<li><a href="#" id="fivekmin" class="dropBtn">5000</a></li>
+													<li><a href="#" id="sixkmin" class="dropBtn">6000</a></li>
+												</ul>
+											</div>
 										</div>
 									</div>
-									<div class="row">
-										<div class="dropdown center-inner">
-											<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="maxCover">4000
-												<span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu">
-												<li><a href="#" id="onekmax" class="dropBtn">1000</a></li>
-												<li><a href="#" id="twokmax" class="dropBtn">2000</a></li>
-												<li><a href="#" id="threekmax" class="dropBtn">3000</a></li>
-												<li><a href="#" id="fourkmax" class="dropBtn">4000</a></li>
-												<li><a href="#" id="fivekmax" class="dropBtn">5000</a></li>
-												<li><a href="#" id="sixkmax" class="dropBtn">6000</a></li>
-											</ul>
+									<div class="center-text col-xs-2 top45" id="shorthline"></div>
+									<div class="col-xs-5"> <!--Minimum level-->
+										<div class="row">
+											<div class="checkbox center-inner">
+												<label><input type="checkbox" id="levelcheckboxmax"><xsall>Max</xsall></label>
+											</div>
+										</div>
+										<div class="row">
+											<div class="dropdown center-inner">
+												<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="maxCover">4000
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li><a href="#" id="onekmax" class="dropBtn">1000</a></li>
+													<li><a href="#" id="twokmax" class="dropBtn">2000</a></li>
+													<li><a href="#" id="threekmax" class="dropBtn">3000</a></li>
+													<li><a href="#" id="fourkmax" class="dropBtn">4000</a></li>
+													<li><a href="#" id="fivekmax" class="dropBtn">5000</a></li>
+													<li><a href="#" id="sixkmax" class="dropBtn">6000</a></li>
+												</ul>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12">
-							<div class="row">
-								<div class="col-xs-12 text-center filtersectionheader top15">
-									CULPA Nuggets
+						<div class="form-group">
+							<div class="col-xs-12">
+								<div class="row">
+									<div class="col-xs-12 text-center filtersectionheader top15">
+										CULPA Nuggets
+									</div>
 								</div>
-							</div>
-							<div class="row top10">
-								<div class="col-xs-12 container">
-									<button type="button" class="btn btn-lg col-xs-5 col-xs-push-0" style="color:white; font-size: medium; font-face: 'HelveticaNeue" id="silvernuggetbtn"><img class="bottom10" src="assets/snug.png" id="silvernuggetimg"></button>
-									<button type="button" class="btn btn-lg col-xs-5 col-xs-push-2" style="color:white; font-size: medium; font-face: 'HelveticaNeue" id="goldnuggetbtn"><img class="bottom10" src="assets/gnug.png" id="goldnuggetimg"></button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12">
-							<div class="row">
-								<div class="col-xs-12 text-center filtersectionheader top15">
-									A-Range
-								</div>
-							</div>
-							<div class="row top10">
-								<div class="col-xs-12">
-									<input type="range" id="myRange" onchange="sliderUpdate()" value="0">
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-xs-12" id="sliderSubLabel">
-									<xsall>At least <b>0%</b> of students got As</xsall>
+								<div class="row top10">
+									<div class="col-xs-12 container">
+										<button type="button" class="btn btn-lg col-xs-5 col-xs-push-0" style="color:white; font-size: medium; font-face: 'HelveticaNeue" id="silvernuggetbtn"><img class="bottom10" src="assets/snug.png" id="silvernuggetimg"></button>
+										<button type="button" class="btn btn-lg col-xs-5 col-xs-push-2" style="color:white; font-size: medium; font-face: 'HelveticaNeue" id="goldnuggetbtn"><img class="bottom10" src="assets/gnug.png" id="goldnuggetimg"></button>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12">
-							<button type="button" onclick="filter();" class="btn btn-lg col-xs-12" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="submitquery">Search</button>
+						<div class="form-group">
+							<div class="col-xs-12">
+								<div class="row">
+									<div class="col-xs-12 text-center filtersectionheader top15">
+										A-Range
+									</div>
+								</div>
+								<div class="row top10">
+									<div class="col-xs-12">
+										<input type="range" id="myRange" onchange="sliderUpdate()" value="0">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12" id="sliderSubLabel">
+										<xsall>At least <b>0%</b> of students got As</xsall>
+									</div>
+								</div>
+							</div>
 						</div>
-					</div>
-				</form>
+						<div class="form-group">
+							<div class="col-xs-12">
+								<button type="button" onclick="filter();" class="btn btn-lg col-xs-12" style="color:white; font-size: xsall; font-face: 'HelveticaNeue" id="submitquery">Search</button>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </div>
 
 
