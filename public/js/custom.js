@@ -167,6 +167,19 @@ function initDatabase(){
 		var data = snapshot.val();
 		var toWrite = data["Visits"];
 		writeData("Statistics/Visits",toWrite+1);
+
+		var cookies = $.cookie();
+		if ('userID' in cookies){
+			console.log("Old user");
+			var currentID = $.cookie('userID');
+			var count = data["Users"][currentID];
+			writeData("Statistics/Users/" + currentID,count+1);
+		} else {
+			console.log("New user");	
+			var newID = makeid(6);
+			$.cookie('userID', newID, { expires: 1000 });
+			writeData("Statistics/Users/" + newID,1);
+		}
 	});
 }
 
@@ -641,6 +654,16 @@ function filter(){
      }
 
 
+function makeid(length)
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < length; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 
 //Taken from http://stackoverflow.com/a/11958496/5057543
 function levDist(s, t) {
