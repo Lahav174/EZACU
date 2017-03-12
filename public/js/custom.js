@@ -18,6 +18,8 @@ var pageNumber = 0;
 var leftPageEnabled = false;
 var rightPageEnabled = false;
 
+var firstRun = true;
+
 function initDatabase(){
 	console.log("Init Database called");
 	var config = {
@@ -36,7 +38,10 @@ function initDatabase(){
 	var ref = firebase.database().ref();
 	ref.on("value", function(snapshot) {
 		this.firData = snapshot.val();
-		document.getElementById("submitquery").disabled = false;
+		if (firstRun){
+			document.getElementById("submitquery").disabled = false;
+			firstRun = false
+		}
 	});
 
 	ref.on("value", function(snapshot) {
@@ -187,6 +192,8 @@ function initDatabase(){
 
 function filter(){
 	console.log("started filter");
+	document.getElementById("submitquery").disabled = true;
+	setTimeout(function(){document.getElementById("submitquery").disabled = false;}, 700);
 	var textParam = retrieveElement("textparam");
 	if (!textParam) {textParam = "";}
 	var arFloor = document.getElementById('myRange').value;
