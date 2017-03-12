@@ -190,6 +190,13 @@ function initDatabase(){
 	});
 }
 
+function ab(b){
+	if (b) {
+		return "O";
+	}
+	return "X";
+}
+
 function filter(){
 	console.log("started filter");
 	document.getElementById("submitquery").disabled = true;
@@ -198,10 +205,10 @@ function filter(){
 	if (!textParam) {textParam = "";}
 	var arFloor = document.getElementById('myRange').value;
 	console.log(arFloor);
-	if (textParam.length > 3){
-		var lastSunday = dateOfLastSunday();
-		writeData("Statistics/Searches/" + lastSunday + "/" + Date.now(),textParam + " - F");
-	}
+	var lastSunday = dateOfLastSunday();
+	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now(), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
+		", GC: " + ab(filterGlobalCore) + ", Min: " + (minLevel/1000) + ", Max: " + (maxLevel/1000) + ", SN: " + ab(filterSilver) + ", GN: " + ab(filterGold));
+	
 
 	var datArr = searchDatabaseForSubstring(textParam);
 	if (filterGold || filterSilver){
