@@ -194,7 +194,7 @@ function filter(){
 	console.log("started filter");
 	document.getElementById("submitquery").disabled = true;
 	setTimeout(function(){document.getElementById("submitquery").disabled = false;}, 700);
-	var textParam = retrieveElement("textparam");
+	var textParam = null;//retrieveElement("textparam");
 	if (!textParam) {textParam = "";}
 	var arFloor = document.getElementById('myRange').value;
 	console.log(arFloor);
