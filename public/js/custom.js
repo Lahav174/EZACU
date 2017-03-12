@@ -159,14 +159,13 @@ function initDatabase(){
 	window.addEventListener("beforeunload", function(e){
 		var searchBarText = retrieveElement("searchbar");
 		if (searchBarText.length > 3){
-			writeData("Statistics/Searches/" + Date.now(),searchBarText);
+			var lastSunday = dateOfLastSunday();
+			writeData("Statistics/Searches/" + lastSunday + "/" + Date.now(),searchBarText);
 		}
 	}, false);
 
 	return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
-		var data = snapshot.val();
-		var toWrite = data["Visits"];
-		writeData("Statistics/Visits",toWrite+1);
+		var data = snapshot.val();		
 
 		var cookies = $.cookie();
 		if ('userID' in cookies){
@@ -174,6 +173,9 @@ function initDatabase(){
 			var currentID = $.cookie('userID');
 			var count = data["Users"][currentID];
 			writeData("Statistics/Users/" + currentID,count+1);
+			if (currentID != "3iYRwa" && currentID != "mba3cQ"){
+				writeData("Statistics/Visits",data["Visits"]+1);
+			}
 		} else {
 			console.log("New user");	
 			var newID = makeid(6);
@@ -190,7 +192,8 @@ function filter(){
 	var arFloor = document.getElementById('myRange').value;
 	console.log(arFloor);
 	if (textParam.length > 3){
-		writeData("Statistics/Searches/" + Date.now(),textParam + " - F");
+		var lastSunday = dateOfLastSunday();
+		writeData("Statistics/Searches/" + lastSunday + "/" + Date.now(),textParam + " - F");
 	}
 
 	var datArr = searchDatabaseForSubstring(textParam);
@@ -389,13 +392,25 @@ function filter(){
 			numBackspace++;
 		} else if (key == 8 && numBackspace == 2){
 			if (savedSearch.length > 3){
-				writeData("Statistics/Searches/" + Date.now(),savedSearch);
+				var lastSunday = dateOfLastSunday();
+				writeData("Statistics/Searches/" + lastSunday + "/" + Date.now(),savedSearch);
 			}
 			numBackspace++;
 		} else {
 			numBackspace = 0;
 		}
 	});
+
+	function dateOfLastSunday(){
+		var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+		var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+		var now = new Date();
+		var day = days[ now.getDay() ];
+		var daysAhead = days.indexOf(day);
+		var sunday = new Date();
+    	sunday.setDate(sunday.getDate()-daysAhead);
+		return sunday.getTime().toString().substring(0,5) + ": " + (sunday.getYear()+1900) + " " + months[sunday.getMonth()] + " " + sunday.getDate();
+	}
 
 	function searchChange(){
 		var searchText = retrieveElement("searchbar")
