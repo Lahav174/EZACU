@@ -422,6 +422,7 @@ function filter(){
 		var daysAhead = days.indexOf(day);
 		var sunday = new Date();
     	sunday.setDate(sunday.getDate()-daysAhead);
+    	sunday.setHours(0,0,0,0);
 		return sunday.getTime().toString().substring(0,5) + ": " + (sunday.getYear()+1900) + " " + months[sunday.getMonth()] + " " + sunday.getDate();
 	}
 
