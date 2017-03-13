@@ -165,7 +165,7 @@ function initDatabase(){
 		var searchBarText = retrieveElement("searchbar");
 		if (searchBarText.length > 3){
 			var lastSunday = dateOfLastSunday();
-			writeData("Statistics/Searches/" + lastSunday + "/" + Date.now(),searchBarText);
+			writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),searchBarText);
 		}
 	}, false);
 
@@ -206,9 +206,8 @@ function filter(){
 	var arFloor = document.getElementById('myRange').value;
 	console.log(arFloor);
 	var lastSunday = dateOfLastSunday();
-	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now(), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
+	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
 		", GC: " + ab(filterGlobalCore) + ", Min: " + (minLevel/1000) + ", Max: " + (maxLevel/1000) + ", SN: " + ab(filterSilver) + ", GN: " + ab(filterGold));
-	
 
 	var datArr = searchDatabaseForSubstring(textParam);
 	if (filterGold || filterSilver){
@@ -407,7 +406,7 @@ function filter(){
 		} else if (key == 8 && numBackspace == 2){
 			if (savedSearch.length > 3){
 				var lastSunday = dateOfLastSunday();
-				writeData("Statistics/Searches/" + lastSunday + "/" + Date.now(),savedSearch);
+				writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),savedSearch);
 			}
 			numBackspace++;
 		} else {
@@ -619,11 +618,11 @@ function filter(){
 		var profName = cleanStr(pname);
 
 		var subVerbArr = firData["Statistics"]["Submissions-Verb"];
-		subVerbArr.push(dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)");
+		subVerbArr.push($.cookie('userID') + ": " + dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)");
 		writeData("Statistics/Submissions-Verb",subVerbArr);
 
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
-     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr}]);
+     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
      		writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
      		console.log("#1");
      		return;
@@ -645,10 +644,10 @@ function filter(){
      			}
      			profsWithLev.sort(function(a,b) {return (a.lev > b.lev) ? 1 : ((b.lev > a.lev) ? -1 : 0);} );
      			if (profsWithLev[0].lev > 4) {
-     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr}]);
+     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
      			} else {
      				var currentArr = firData["Departments"][dept][c]["Professors"][profsWithLev[0].prof];
-     				currentArr.push({arange:ar,date:datestr});
+     				currentArr.push({arange:ar,date:datestr,contributor:$.cookie('userID')});
      				writeData("Departments/" + dept + "/" + c + "/Professors/" + profsWithLev[0].prof,currentArr);
      			}
      			var usedNames = firData["Departments"][dept][c]["Names"];
@@ -667,7 +666,7 @@ function filter(){
      	}
      	console.log("#3");
      	//Write full path, since the dept exists but not the course
-     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr}]);
+     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
      	writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
 
      }
