@@ -18,6 +18,8 @@ var pageNumber = 0;
 var leftPageEnabled = false;
 var rightPageEnabled = false;
 
+var firstRun = true;
+
 function initDatabase(){
 	console.log("Init Database called");
 	var config = {
@@ -36,7 +38,10 @@ function initDatabase(){
 	var ref = firebase.database().ref();
 	ref.on("value", function(snapshot) {
 		this.firData = snapshot.val();
-		document.getElementById("submitquery").disabled = false;
+		if (firstRun){
+			document.getElementById("submitquery").disabled = false;
+			firstRun = false
+		}
 	});
 
 	ref.on("value", function(snapshot) {
@@ -159,26 +164,50 @@ function initDatabase(){
 	window.addEventListener("beforeunload", function(e){
 		var searchBarText = retrieveElement("searchbar");
 		if (searchBarText.length > 3){
-			writeData("Statistics/Searches/" + Date.now(),searchBarText);
+			var lastSunday = dateOfLastSunday();
+			writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),searchBarText);
 		}
 	}, false);
 
 	return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
-		var data = snapshot.val();
-		var toWrite = data["Visits"];
-		writeData("Statistics/Visits",toWrite+1);
+		var data = snapshot.val();		
+
+		var cookies = $.cookie();
+		if ('userID' in cookies){
+			console.log("Old user");
+			var currentID = $.cookie('userID');
+			var count = data["Users"][currentID];
+			writeData("Statistics/Users/" + currentID,count+1);
+			if (currentID != "3iYRwa" && currentID != "mba3cQ"){
+				writeData("Statistics/Visits",data["Visits"]+1);
+			}
+		} else {
+			console.log("New user");	
+			var newID = makeid(6);
+			$.cookie('userID', newID, { expires: 1000 });
+			writeData("Statistics/Users/" + newID,1);
+		}
 	});
+}
+
+function ab(b){
+	if (b) {
+		return "O";
+	}
+	return "X";
 }
 
 function filter(){
 	console.log("started filter");
-	var textParam = retrieveElement("textparam");
+	document.getElementById("submitquery").disabled = true;
+	setTimeout(function(){document.getElementById("submitquery").disabled = false;}, 700);
+	var textParam = null;//retrieveElement("textparam");
 	if (!textParam) {textParam = "";}
 	var arFloor = document.getElementById('myRange').value;
 	console.log(arFloor);
-	if (textParam.length > 3){
-		writeData("Statistics/Searches/" + Date.now(),textParam + " - F");
-	}
+	var lastSunday = dateOfLastSunday();
+	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
+		", GC: " + ab(filterGlobalCore) + ", Min: " + (minLevel/1000) + ", Max: " + (maxLevel/1000) + ", SN: " + ab(filterSilver) + ", GN: " + ab(filterGold));
 
 	var datArr = searchDatabaseForSubstring(textParam);
 	if (filterGold || filterSilver){
@@ -376,13 +405,26 @@ function filter(){
 			numBackspace++;
 		} else if (key == 8 && numBackspace == 2){
 			if (savedSearch.length > 3){
-				writeData("Statistics/Searches/" + Date.now(),savedSearch);
+				var lastSunday = dateOfLastSunday();
+				writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),savedSearch);
 			}
 			numBackspace++;
 		} else {
 			numBackspace = 0;
 		}
 	});
+
+	function dateOfLastSunday(){
+		var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+		var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+		var now = new Date();
+		var day = days[ now.getDay() ];
+		var daysAhead = days.indexOf(day);
+		var sunday = new Date();
+    	sunday.setDate(sunday.getDate()-daysAhead);
+    	sunday.setHours(0,0,0,0);
+		return sunday.getTime().toString().substring(0,5) + ": " + (sunday.getYear()+1900) + " " + months[sunday.getMonth()] + " " + sunday.getDate();
+	}
 
 	function searchChange(){
 		var searchText = retrieveElement("searchbar")
@@ -577,11 +619,11 @@ function filter(){
 		var profName = cleanStr(pname);
 
 		var subVerbArr = firData["Statistics"]["Submissions-Verb"];
-		subVerbArr.push(dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)");
+		subVerbArr.push($.cookie('userID') + ": " + dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)");
 		writeData("Statistics/Submissions-Verb",subVerbArr);
 
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
-     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr}]);
+     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
      		writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
      		console.log("#1");
      		return;
@@ -603,10 +645,10 @@ function filter(){
      			}
      			profsWithLev.sort(function(a,b) {return (a.lev > b.lev) ? 1 : ((b.lev > a.lev) ? -1 : 0);} );
      			if (profsWithLev[0].lev > 4) {
-     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr}]);
+     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
      			} else {
      				var currentArr = firData["Departments"][dept][c]["Professors"][profsWithLev[0].prof];
-     				currentArr.push({arange:ar,date:datestr});
+     				currentArr.push({arange:ar,date:datestr,contributor:$.cookie('userID')});
      				writeData("Departments/" + dept + "/" + c + "/Professors/" + profsWithLev[0].prof,currentArr);
      			}
      			var usedNames = firData["Departments"][dept][c]["Names"];
@@ -625,7 +667,7 @@ function filter(){
      	}
      	console.log("#3");
      	//Write full path, since the dept exists but not the course
-     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr}]);
+     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
      	writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
 
      }
@@ -641,6 +683,16 @@ function filter(){
      }
 
 
+function makeid(length)
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < length; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
 
 //Taken from http://stackoverflow.com/a/11958496/5057543
 function levDist(s, t) {
