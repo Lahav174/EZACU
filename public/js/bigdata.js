@@ -6821,6 +6821,20 @@ var silverNuggets = {
 		"nugget": "Silver"
 	}, 
 	{
+		"first_name": "Pietro", 
+		"id": 12991, 
+		"last_name": "Ortoleva", 
+		"middle_name": "", 
+		"nugget": "Silver"
+	}, 
+	{
+		"first_name": "John", 
+		"id": 12997, 
+		"last_name": "Cunningham", 
+		"middle_name": "P ", 
+		"nugget": "Silver"
+	}, 
+	{
 		"first_name": "Daniel", 
 		"id": 13116, 
 		"last_name": "Hsu", 
@@ -7239,6 +7253,13 @@ var goldNuggets = {
 		"first_name": "Amber", 
 		"id": 2765, 
 		"last_name": "Youell-Fingleton", 
+		"middle_name": "", 
+		"nugget": "Gold"
+	}, 
+	{
+		"first_name": "Matt", 
+		"id": 2828, 
+		"last_name": "Vaz", 
 		"middle_name": "", 
 		"nugget": "Gold"
 	}, 
