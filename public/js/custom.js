@@ -73,7 +73,6 @@ function initDatabase(){
 			}
 			$("#profNameList").html(str);
 
-
 			firstRun = false
 		}
 	});
