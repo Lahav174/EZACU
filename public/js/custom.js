@@ -29,9 +29,7 @@ function initDatabase(){
 		storageBucket: "ezacu-716f6.appspot.com",
 		messagingSenderId: "467399916123"
 	};
-	firebase.initializeApp(config);
-
-	console.log("Database read!");
+	firebase.initializeApp(config);	
 	
 	document.getElementById("submitquery").disabled = true;
 
@@ -40,6 +38,42 @@ function initDatabase(){
 		this.firData = snapshot.val();
 		if (firstRun){
 			document.getElementById("submitquery").disabled = false;
+			console.log("Database read!");
+			var datArr = searchDatabaseForSubstring();
+			let profSet = new Set();
+			let courseSet = new Set();
+			let idSet = new Set();
+			for (var i = 0; i < datArr.length; i++) {
+				profSet.add(datArr[i]["profName"]);
+				courseSet.add(datArr[i]["courseName"]);
+				idSet.add(datArr[i]["id"]);
+			}
+
+			var array = Array.from(courseSet);
+			array.sort();
+			var str = "";
+			for (var i = 0; i < array.length; i++) {
+				str += "<option value=\"" + array[i] + "\">";
+			}
+			$("#courseNameList").html(str);
+
+			array = Array.from(idSet);
+			array.sort();
+			str = "";
+			for (var i = 0; i < array.length; i++) {
+				str += "<option value=\"" + array[i] + "\">";
+			}
+			$("#courseIdList").html(str);
+
+			array = Array.from(profSet);
+			array.sort();
+			str = "";
+			for (var i = 0; i < array.length; i++) {
+				str += "<option value=\"" + array[i] + "\">";
+			}
+			$("#profNameList").html(str);
+
+
 			firstRun = false
 		}
 	});
@@ -198,13 +232,13 @@ function ab(b){
 }
 
 function filter(){
-	console.log("started filter");
+	//console.log("started filter");
 	document.getElementById("submitquery").disabled = true;
 	setTimeout(function(){document.getElementById("submitquery").disabled = false;}, 700);
 	var textParam = null;//retrieveElement("textparam");
 	if (!textParam) {textParam = "";}
 	var arFloor = document.getElementById('myRange').value;
-	console.log(arFloor);
+	//console.log(arFloor);
 	var lastSunday = dateOfLastSunday();
 	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
 		", GC: " + ab(filterGlobalCore) + ", Min: " + (minLevel/1000) + ", Max: " + (maxLevel/1000) + ", SN: " + ab(filterSilver) + ", GN: " + ab(filterGold));
@@ -276,7 +310,7 @@ function filter(){
 		});
 	}
 
-	console.log("Done!");
+	//console.log("Done!");
 	datArr.sort(function(a,b) {
 		return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
 		//console.log(datArr);
@@ -457,7 +491,7 @@ function filter(){
 	}
 
 
-	function searchDatabaseForSubstring(substring){
+	function searchDatabaseForSubstring(substring = ""){
 		
 		var searchText = substring.toLowerCase();
 		var matching = [];
@@ -632,7 +666,7 @@ function filter(){
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
      		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
      		writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
-     		console.log("#1");
+     		//console.log("#1");
      		return;
      	} 
 
@@ -659,7 +693,7 @@ function filter(){
      				writeData("Departments/" + dept + "/" + c + "/Professors/" + profsWithLev[0].prof,currentArr);
      			}
      			var usedNames = firData["Departments"][dept][c]["Names"];
-     			console.log("#2");
+     			//console.log("#2");
      			for (var i = usedNames.length - 1; i >= 0; i--) {
      				if (usedNames[i]["name"] == courseName){
      					usedNames[i]["count"] = usedNames[i]["count"]+1;
@@ -672,7 +706,7 @@ function filter(){
      			return;
      		}
      	}
-     	console.log("#3");
+     	//console.log("#3");
      	//Write full path, since the dept exists but not the course
      	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
      	writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
