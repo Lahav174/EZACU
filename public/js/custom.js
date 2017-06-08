@@ -79,15 +79,6 @@ function initDatabase(){
 		}
 	});
 
-	$(function() {
-    $.getJSON("https://api.ipify.org?format=jsonp&callback=?",
-      function(json) {
-      	ipAddress = json.ip;
-        console.log("My public IP address is: ", ipAddress);
-      }
-    );
-  });
-
 	ref.on("value", function(snapshot) {
 		var database = snapshot.val();
 		$("#message").html("<b>" + database["Z-Message"] + "</b>");
@@ -209,29 +200,37 @@ function initDatabase(){
 		var searchBarText = retrieveElement("searchbar");
 		if (searchBarText.length > 3){
 			var lastSunday = dateOfLastSunday();
-			writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),searchBarText);
+			writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + ipAddress,searchBarText);
 		}
 	}, false);
 
-	return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
-		var data = snapshot.val();		
+	$(function() {
+		$.getJSON("https://api.ipify.org?format=jsonp&callback=?",
+			function(json) {
+				ipAddress = (json.ip).replace(/\./g,"-");
+				//console.log("My public IP address is: ", ipAddress);
 
-		var cookies = $.cookie();
-		if ('userID' in cookies){
-			console.log("Old user");
-			var currentID = $.cookie('userID');
-			var count = data["Users"][currentID];
-			writeData("Statistics/Users/" + currentID,count+1);
-			if (currentID != "3iYRwa" && currentID != "mba3cQ"){
-				writeData("Statistics/Visits",data["Visits"]+1);
+				return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
+					var data = snapshot.val();	
+					if (ipAddress in data["Users"])
+					{
+						console.log("Old user");
+						var count = data["Users"][ipAddress];
+						writeData("Statistics/Users/" + ipAddress,count+1);
+						if (ipAddress != "160-39-32-221"){
+							writeData("Statistics/Visits",data["Visits"]+1);
+						}
+					} else 
+					{
+						console.log("New user");
+						writeData("Statistics/Users/" + ipAddress,1);
+						writeData("Statistics/Visits",data["Visits"]+1);
+					}
+				})
 			}
-		} else {
-			console.log("New user");	
-			var newID = makeid(6);
-			$.cookie('userID', newID, { expires: 1000 });
-			writeData("Statistics/Users/" + newID,1);
-		}
+			)
 	});
+
 }
 
 function ab(b){
@@ -250,7 +249,7 @@ function filter(){
 	var arFloor = document.getElementById('myRange').value;
 	//console.log(arFloor);
 	var lastSunday = dateOfLastSunday();
-	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
+	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + ipAddress, "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
 		", GC: " + ab(filterGlobalCore) + ", Min: " + (minLevel/1000) + ", Max: " + (maxLevel/1000) + ", SN: " + ab(filterSilver) + ", GN: " + ab(filterGold));
 
 	var datArr = searchDatabaseForSubstring(textParam);
@@ -440,7 +439,7 @@ function filter(){
 	}
 
 	$( "#searchbar" ).keydown(function(event) {
-  		var input = document.getElementById('searchbar');
+		var input = document.getElementById('searchbar');
 		var key = event.which;
 		if (key == 8 && numBackspace == 0){
 			savedSearch = (retrieveElement("searchbar")).trim();
@@ -450,7 +449,7 @@ function filter(){
 		} else if (key == 8 && numBackspace == 2){
 			if (savedSearch.length > 3){
 				var lastSunday = dateOfLastSunday();
-				writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),savedSearch);
+				writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + ipAddress,savedSearch);
 			}
 			numBackspace++;
 		} else {
@@ -465,8 +464,8 @@ function filter(){
 		var day = days[ now.getDay() ];
 		var daysAhead = days.indexOf(day);
 		var sunday = new Date();
-    	sunday.setDate(sunday.getDate()-daysAhead);
-    	sunday.setHours(0,0,0,0);
+		sunday.setDate(sunday.getDate()-daysAhead);
+		sunday.setHours(0,0,0,0);
 		return (sunday.getYear()+1900) + " (" + sunday.getWeekNumber() + ") " + months[sunday.getMonth()] + " " + sunday.getDate();
 	}
 
@@ -670,11 +669,11 @@ function filter(){
 		var profName = cleanStr(pname);
 
 		var subVerbArr = firData["Statistics"]["Submissions-Verb"];
-		subVerbArr.push($.cookie('userID') + ": " + dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)");
+		subVerbArr.push(ipAddress + ": " + dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)");
 		writeData("Statistics/Submissions-Verb",subVerbArr);
 
      	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
-     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
+     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:ipAddress}]);
      		writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
      		//console.log("#1");
      		return;
@@ -696,10 +695,10 @@ function filter(){
      			}
      			profsWithLev.sort(function(a,b) {return (a.lev > b.lev) ? 1 : ((b.lev > a.lev) ? -1 : 0);} );
      			if (profsWithLev[0].lev > 4) {
-     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
+     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:ipAddress}]);
      			} else {
      				var currentArr = firData["Departments"][dept][c]["Professors"][profsWithLev[0].prof];
-     				currentArr.push({arange:ar,date:datestr,contributor:$.cookie('userID')});
+     				currentArr.push({arange:ar,date:datestr,contributor:ipAddress});
      				writeData("Departments/" + dept + "/" + c + "/Professors/" + profsWithLev[0].prof,currentArr);
      			}
      			var usedNames = firData["Departments"][dept][c]["Names"];
@@ -718,7 +717,7 @@ function filter(){
      	}
      	//console.log("#3");
      	//Write full path, since the dept exists but not the course
-     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
+     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:ipAddress}]);
      	writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
 
      }
@@ -732,18 +731,6 @@ function filter(){
      function writeData(path,obj) {
      	firebase.database().ref().child(path).set(obj);
      }
-
-
-function makeid(length)
-{
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < length; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-}
 
 //Taken from http://stackoverflow.com/a/11958496/5057543
 function levDist(s, t) {
