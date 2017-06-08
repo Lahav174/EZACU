@@ -20,6 +20,8 @@ var rightPageEnabled = false;
 
 var firstRun = true;
 
+var ipAddress = "";
+
 function initDatabase(){
 	console.log("Init Database called");
 	var config = {
@@ -40,9 +42,9 @@ function initDatabase(){
 			document.getElementById("submitquery").disabled = false;
 			console.log("Database read!");
 			var datArr = searchDatabaseForSubstring();
-			let profSet = new Set();
-			let courseSet = new Set();
-			let idSet = new Set();
+			var profSet = new Set();
+			var courseSet = new Set();
+			var idSet = new Set();
 			for (var i = 0; i < datArr.length; i++) {
 				profSet.add(datArr[i]["profName"]);
 				courseSet.add(datArr[i]["courseName"]);
@@ -76,6 +78,15 @@ function initDatabase(){
 			firstRun = false
 		}
 	});
+
+	$(function() {
+    $.getJSON("https://api.ipify.org?format=jsonp&callback=?",
+      function(json) {
+      	ipAddress = json.ip;
+        console.log("My public IP address is: ", ipAddress);
+      }
+    );
+  });
 
 	ref.on("value", function(snapshot) {
 		var database = snapshot.val();
