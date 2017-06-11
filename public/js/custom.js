@@ -23,7 +23,7 @@ var firstRun = true;
 var ipAddress = "";
 
 function initDatabase(){
-	console.log("Init Database called");
+	console.log("Build 280");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -78,15 +78,6 @@ function initDatabase(){
 			firstRun = false
 		}
 	});
-
-	$(function() {
-    $.getJSON("https://api.ipify.org?format=jsonp&callback=?",
-      function(json) {
-      	ipAddress = json.ip;
-        console.log("My public IP address is: ", ipAddress);
-      }
-    );
-  });
 
 	ref.on("value", function(snapshot) {
 		var database = snapshot.val();
@@ -215,21 +206,25 @@ function initDatabase(){
 
 	return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
 		var data = snapshot.val();		
-
-		var cookies = $.cookie();
-		if ('userID' in cookies){
-			console.log("Old user");
-			var currentID = $.cookie('userID');
-			var count = data["Users"][currentID];
-			writeData("Statistics/Users/" + currentID,count+1);
-			if (currentID != "3iYRwa" && currentID != "mba3cQ"){
+		if (window.location.protocol == 'https:'){
+			var cookies = $.cookie();
+			if ('userID' in cookies && $.cookie('userID') in data["Users"]){
+				var currentID = $.cookie('userID');
+				console.log("Old user:", currentID);
+				var count = data["Users"][currentID];
+				writeData("Statistics/Users/" + currentID,count+1);
+				if (currentID != "qxyru3" && currentID != "DAXO5F"){
+					writeData("Statistics/Visits",data["Visits"]+1);
+				}
+			} else {
+				console.log("New user");	
+				var newID = makeid(6);
+				$.cookie('userID', newID, { expires: 1000 });
+				writeData("Statistics/Users/" + newID,1);
 				writeData("Statistics/Visits",data["Visits"]+1);
 			}
 		} else {
-			console.log("New user");	
-			var newID = makeid(6);
-			$.cookie('userID', newID, { expires: 1000 });
-			writeData("Statistics/Users/" + newID,1);
+			console.log("Running Locally");
 		}
 	});
 }
