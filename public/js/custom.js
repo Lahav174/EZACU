@@ -23,7 +23,7 @@ var firstRun = true;
 var ipAddress = "";
 
 function initDatabase(){
-	console.log("Build 280");
+	console.log("Build 282");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -242,8 +242,6 @@ function filter(){
 	setTimeout(function(){document.getElementById("submitquery").disabled = false;}, 700);
 	var textParam = null;//retrieveElement("textparam");
 	if (!textParam) {textParam = "";}
-	var arFloor = document.getElementById('myRange').value;
-	//console.log(arFloor);
 	var lastSunday = dateOfLastSunday();
 	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
 		", GC: " + ab(filterGlobalCore) + ", Min: " + (minLevel/1000) + ", Max: " + (maxLevel/1000) + ", SN: " + ab(filterSilver) + ", GN: " + ab(filterGold));
@@ -295,11 +293,6 @@ function filter(){
 		datArr = datArr.filter(function(e){
 			var id = e["id"].split(' ');
 			return $.inArray(id[0], nontechs) != -1;
-		});
-	}
-	if (arFloor > 0){
-		datArr = datArr.filter(function(e){
-			return e["ar"] > (arFloor);
 		});
 	}
 	if (document.getElementById('levelcheckboxmin').checked) {
@@ -427,11 +420,6 @@ function filter(){
 			}
 		}
 		return output.trim();
-	}
-
-	function sliderUpdate(){
-		var arFloor = document.getElementById('myRange').value;
-		$("#sliderSubLabel").html("<xsall>At least <b>" + arFloor + "%</b> of students got As</xsall>");
 	}
 
 	$( "#searchbar" ).keydown(function(event) {
