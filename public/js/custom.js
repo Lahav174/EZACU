@@ -23,7 +23,7 @@ var firstRun = true;
 var ipAddress = "";
 
 function initDatabase(){
-	console.log("Build 282");
+	console.log("Build 283");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -78,6 +78,8 @@ function initDatabase(){
 			firstRun = false
 		}
 	});
+
+	$.get("http://culpa.info/professors/silver_nuggets?page=3", function(response) { alert(response) });
 
 	ref.on("value", function(snapshot) {
 		var database = snapshot.val();
