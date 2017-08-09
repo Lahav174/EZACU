@@ -416,7 +416,9 @@ function filter(){
 		str += "</tbody>";
 
 		$(document).ready(function(){
-    		$('[data-toggle="popover"]').popover();   
+    		$('[data-toggle="popover"]').popover().click(function(e) {
+        		e.preventDefault();
+     		});;   
 		 });
 
 
