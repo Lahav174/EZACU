@@ -1,0 +1,20 @@
+{
+  "rules": {
+    "Departments": {
+      ".read": true,
+    	".write": true
+    },
+    "Statistics": {
+        ".read": true,
+    		".write": true,
+          "Searches": {
+            	".read": false,
+    					".write": true
+          }
+    },
+     "Watchlist": {
+        ".read": false,
+    		".write": false
+    }, 
+  }
+}

@@ -23,7 +23,7 @@ var firstRun = true;
 var ipAddress = "";
 
 function initDatabase(){
-	console.log("Build 283");
+	console.log("Build 284");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -85,6 +85,8 @@ function initDatabase(){
 		var database = snapshot.val();
 		$("#message").html("<b>" + database["Z-Message"] + "</b>");
 	});
+
+	window.onresize = resize;
 
 	setTable(0,[]);
 
@@ -344,6 +346,11 @@ function filter(){
 		}
 	}
 
+	function resize() { 
+    console.log("Resizing!");
+    $('.popover').popover('hide')
+  }
+
 	function setTable(page,data) {
 		var coursesPerPage = 16;
 
@@ -387,11 +394,14 @@ function filter(){
 				} else {
 					str += "<td>" + data[i]["courseName"].substring(0,maxCourseLen-2) + "...</td>";
 				}
+				var percentageStr = ""
 				if ((data[i]["ar"]*100)%100 > 0){
-					str += "<td class=\"text-center\">" + Math.floor(data[i]["ar"]) + "% &plusmn " + Math.round((data[i]["ar"]*100)%100) + "%</td>";
+					percentageStr = Math.floor(data[i]["ar"]) + "% &plusmn " + Math.round((data[i]["ar"]*100)%100)
 				} else {
-					str += "<td class=\"text-center\">" + data[i]["ar"] + "%</td>";
+					percentageStr = data[i]["ar"]					
 				}
+				str += "<td class=\"text-center\" percentageDisplay>" + "<a href=\"#\" data-toggle=\"popover\" data-trigger=\"focus\" title=\"" + percentageStr + "\" data-content=\"Some content inside the popover\">" + percentageStr + "%</a>" + "</td>";
+
 				str += "</tr>";
 			} else {
 				str += "<tr>";
@@ -404,6 +414,11 @@ function filter(){
 			}
 		}
 		str += "</tbody>";
+
+		$(document).ready(function(){
+    		$('[data-toggle="popover"]').popover();   
+		 });
+
 
 		document.getElementById('datatable').innerHTML = str;
 	}	 

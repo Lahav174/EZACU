@@ -27,6 +27,10 @@
 	font-size: smaller;
 }
 
+.popover{
+    width:200px;
+}
+
 .filtersectionheader {
 font-size: large;
 }
