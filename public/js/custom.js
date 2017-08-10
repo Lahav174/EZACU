@@ -79,8 +79,6 @@ function initDatabase(){
 		}
 	});
 
-	$.get("http://culpa.info/professors/silver_nuggets?page=3", function(response) { alert(response) });
-
 	ref.on("value", function(snapshot) {
 		var database = snapshot.val();
 		$("#message").html("<b>" + database["Z-Message"] + "</b>");
@@ -400,8 +398,21 @@ function filter(){
 				} else {
 					percentageStr = data[i]["ar"]					
 				}
-				str += "<td class=\"text-center\" percentageDisplay>" + "<a href=\"#\" data-toggle=\"popover\" data-trigger=\"focus\" title=\"" + percentageStr + "\" data-content=\"Some content inside the popover\">" + percentageStr + "%</a>" + "</td>";
+				
+				var percentageArr = firData["Departments"][data[i]["id"].split(' ')[0]][data[i]["id"].split(' ')[1]]["Professors"][data[i]["profName"]]
+				str += "<td class=\"text-center\" percentageDisplay>" + "<a href=\"#\" data-toggle=\"popover\" data-trigger=\"focus\" data-html=\"true\" title=\"" + "Submissions (" + percentageArr.length + ")" + "\" data-content=\"";
 
+				for (var n = 0; n < percentageArr.length; n++) {
+					str += (n+1) + ") " + percentageArr[n]["arange"] + "% | ";
+					if ("date" in percentageArr[n]) {
+						str += percentageArr[n]["date"].split(' ')[0];
+					} else {
+						str += "Before Oct. 2017";
+					}
+					str += "<br>"
+				}
+
+				str += "\">" + percentageStr + "%</a>" + "</td>";
 				str += "</tr>";
 			} else {
 				str += "<tr>";
@@ -418,7 +429,7 @@ function filter(){
 		$(document).ready(function(){
     		$('[data-toggle="popover"]').popover().click(function(e) {
         		e.preventDefault();
-     		});;   
+     		});
 		 });
 
 
