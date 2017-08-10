@@ -324,9 +324,11 @@ function filter(){
 		}
 
 		return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
-			var data = snapshot.val();
-			var toWrite = data["Search-Queries"];
-			writeData("Statistics/Search-Queries",toWrite+1);
+			if (window.location.protocol == 'https:'){
+				var data = snapshot.val();
+				var toWrite = data["Search-Queries"];
+				writeData("Statistics/Search-Queries",toWrite+1);
+			}
 		});
 	}
 
@@ -400,7 +402,7 @@ function filter(){
 				}
 				
 				var percentageArr = firData["Departments"][data[i]["id"].split(' ')[0]][data[i]["id"].split(' ')[1]]["Professors"][data[i]["profName"]]
-				str += "<td class=\"text-center\" percentageDisplay>" + "<a href=\"#\" data-toggle=\"popover\" data-trigger=\"focus\" data-html=\"true\" title=\"" + "Submissions (" + percentageArr.length + ")" + "\" data-content=\"";
+				str += "<td class=\"text-center\" percentageDisplay>" + "<a style=\"color:#3A7FCF\" href=\"#\" data-toggle=\"popover\" data-trigger=\"focus\" data-html=\"true\" title=\"" + "Submissions (" + percentageArr.length + ")" + "\" data-content=\"";
 
 				for (var n = 0; n < percentageArr.length; n++) {
 					str += (n+1) + ") " + percentageArr[n]["arange"] + "% | ";
