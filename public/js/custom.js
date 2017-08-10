@@ -23,7 +23,7 @@ var firstRun = true;
 var ipAddress = "";
 
 function initDatabase(){
-	console.log("Build 284");
+	console.log("Build 285");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -409,7 +409,7 @@ function filter(){
 					if ("date" in percentageArr[n]) {
 						str += percentageArr[n]["date"].split(' ')[0];
 					} else {
-						str += "Before Oct. 2017";
+						str += "Before Oct. 2016";
 					}
 					str += "<br>"
 				}
