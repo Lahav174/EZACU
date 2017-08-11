@@ -23,7 +23,7 @@ var firstRun = true;
 var ipAddress = "";
 
 function initDatabase(){
-	console.log("Build 285");
+	console.log("Build 286");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -347,9 +347,8 @@ function filter(){
 	}
 
 	function resize() { 
-    console.log("Resizing!");
-    $('.popover').popover('hide')
-  }
+    	$('.popover').popover('hide')
+  	}
 
 	function setTable(page,data) {
 		var coursesPerPage = 16;
