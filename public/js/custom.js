@@ -23,7 +23,7 @@ var firstRun = true;
 var ipAddress = "";
 
 function initDatabase(){
-	console.log("Build 288");
+	console.log("Build 289");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -444,7 +444,8 @@ function filter(){
 		var arr = preoutput.split(' ');
 		var output = "";
 		for (var i=0;i<arr.length;i++){
-			if (arr[i].toLowerCase() != "i" && arr[i].toLowerCase() != "ii" && arr[i].toLowerCase() != "iii" && arr[i].toLowerCase() != "iv"){
+			if (arr[i].toLowerCase() != "i" && arr[i].toLowerCase() != "ii" && arr[i].toLowerCase() != "iii" && arr[i].toLowerCase() != "iv"
+				 && arr[i].toLowerCase() != "i:" && arr[i].toLowerCase() != "ii:" && arr[i].toLowerCase() != "iii:" && arr[i].toLowerCase() != "iv:"){
 				output += " " + arr[i].charAt(0).toUpperCase() + arr[i].substring(1);
 			} else {
 				output += " " + arr[i].toUpperCase();
@@ -551,7 +552,7 @@ function filter(){
 				} else {
 					var courseSigs = Object.keys(firData["Departments"][depts[i]]);
 					for (var j = courseSigs.length - 1; j >= 0; j--) {
-						if ((courseSigs[j].toLowerCase()).indexOf(searchText) >= 0){
+						if ((depts[i] + " " + courseSigs[j]).toLowerCase().indexOf(searchText) >= 0){
 							var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
 							courseNameArrNumbers.sort(function(a,b) {
 								var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
