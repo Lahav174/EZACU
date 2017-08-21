@@ -23,7 +23,7 @@ var firstRun = true;
 var ipAddress = "";
 
 function initDatabase(){
-	console.log("Build 287");
+	console.log("Build 288");
 	var config = {
 		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
 		authDomain: "ezacu-716f6.firebaseapp.com",
@@ -636,7 +636,7 @@ function filter(){
 			var profName = retrieveElement("prof-name");
 			var aRange = retrieveElement("a-range");
 
-			if (splitID.length != 2 || (splitID[1].length != 4 && splitID[1].length != 5) || 
+			if (splitID.length != 2 || (splitID[1].length != 4 && splitID[1].length != 5 && splitID[1].length != 6) || 
 				(splitID[0].length != 3 && splitID[0].length != 4)){
 				$("#submissionerror").html("Please enter the course ID in the correct format");
 			return;
