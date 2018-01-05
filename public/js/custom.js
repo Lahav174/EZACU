@@ -21,27 +21,314 @@ var rightPageEnabled = false;
 var firstRun = true;
 
 var ipAddress = "";
+var userIDset = false;
 
-function initDatabase(){
-	console.log("Build 289");
+
+function ab(b){
+	if (b) {
+		return "O";
+	}
+	return "X";
+}
+
+function filter(){
+	//console.log("started filter");
+	document.getElementById("submitquery").disabled = true;
+	setTimeout(function(){document.getElementById("submitquery").disabled = false;}, 700);
+	var textParam = null;//retrieveElement("textparam");
+	if (!textParam) {textParam = "";}
+	var lastSunday = dateOfLastSunday();
+	writeData("PrivateStatistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
+		", GC: " + ab(filterGlobalCore) + ", Min: " + (minLevel/1000) + ", Max: " + (maxLevel/1000) + ", SN: " + ab(filterSilver) + ", GN: " + ab(filterGold));
+
+	var datArr = searchDatabaseForSubstring(textParam);
+	if (filterGold || filterSilver){
+		datArr = datArr.filter(function(e){
+			var name = e["profName"];
+			if (filterGold){
+				for (var i = 0; i < goldNuggets["professors"].length; i++) {
+					var firstName = goldNuggets["professors"][i]["first_name"];
+					var lastName = goldNuggets["professors"][i]["last_name"];
+					if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
+						return true;
+					} 
+				}
+			} 
+			if (filterSilver){
+				for (var i = 0; i < silverNuggets["professors"].length; i++) {
+					var firstName = silverNuggets["professors"][i]["first_name"];
+					var lastName = silverNuggets["professors"][i]["last_name"];
+					if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
+						return true;
+					} 
+				}
+			}
+			return false;
+		});
+	} 
+	if (filterGlobalCore){
+		datArr = datArr.filter(function(e){
+			var id = e["id"].split(' ');
+			for (var i = 0; i < globalCores.length; i++) {
+				var gcID = globalCores[i];
+				if (gcID.indexOf(id[0]) >= 0 && gcID.indexOf(id[1]) >= 0){
+					return true;
+				} 
+			}
+			return false;
+		});
+	}
+	if (filterTechnical){
+		datArr = datArr.filter(function(e){
+			var id = e["id"].split(' ');
+			return $.inArray(id[0], techs) != -1;
+		});
+	}
+	if (filterNonTechnical){
+		datArr = datArr.filter(function(e){
+			var id = e["id"].split(' ');
+			return $.inArray(id[0], nontechs) != -1;
+		});
+	}
+	if (document.getElementById('levelcheckboxmin').checked) {
+		datArr = datArr.filter(function(e){
+			var sig = (e["id"].split(' '))[1];
+			return Number(sig.charAt(sig.length-4))*1000 >= minLevel;
+		});
+	}
+	if (document.getElementById('levelcheckboxmax').checked) {
+		datArr = datArr.filter(function(e){
+			var sig = (e["id"].split(' '))[1];
+			return Number(sig.charAt(sig.length-4))*1000 <= maxLevel;
+		});
+	}
+
+	//console.log("Done!");
+	datArr.sort(function(a,b) {
+		return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
+		//console.log(datArr);
+		setTable(0,datArr);
+		$("#searchres").html("<font color=\"grey\"><b>("+ datArr.length +" Results)</b></font>");
+
+		if (datArr.length > 0){
+			$("#tableerror").html("");
+		} else {
+			$("#tableerror").html("<b>No results matched your search</b>");
+		}
+
+		return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
+			if (window.location.protocol == 'https:'){
+				var data = snapshot.val();
+				var toWrite = data["Search-Queries"];
+				writeData("Statistics/Search-Queries",toWrite+1);
+			}
+		});
+	}
+
+	function nextPage() {
+		if (rightPageEnabled){
+			pageNumber++;
+			setTable(pageNumber,tableData);
+		}
+	}
+
+	function lastPage() {
+		if (leftPageEnabled){
+			pageNumber--;
+			setTable(pageNumber,tableData);
+		}
+	}
+
+	function resize() { 
+		$('.popover').popover('hide')
+	}
+
+	function setTable(page,data) {
+		var coursesPerPage = 16;
+
+		if (rightPageEnabled = (data.length > coursesPerPage*(page+1))){
+			$("#rightarrow").html("<img src=\"assets/rightpage.png\" style=\"height:20px;\">");
+		} else {
+			$("#rightarrow").html("<img src=\"assets/rightpagedis.png\" style=\"height:20px;\">");
+		}
+		if (leftPageEnabled = (page != 0)){
+			$("#leftarrow").html("<img src=\"assets/leftpage.png\" style=\"height:20px;\">");
+		} else {
+			$("#leftarrow").html("<img src=\"assets/leftpagedis.png\" style=\"height:20px;\">");
+		}
+		tableData = data;
+		pageNumber = page;
+		$("#pagenum").html("Page " + (page+1));
+		var str = "<thead>";
+		str += "<tr class=\"active\">";
+		str += "<th>#</th>";
+		str += "<th>Professor</th>";
+		str += "<th>Course ID</th>";
+		str += "<th>Course Name</th>"
+		str += "<th>A-Range</th>"
+		str += "</tr>"
+		str += "</thead>"
+		str += "<tbody>";
+		var maxProfLen = 27;
+		var maxCourseLen = 35;
+		for (var i=page*coursesPerPage; i<coursesPerPage*(page+1); i++){
+			if (i < data.length){				
+				str += "<tr>";
+				str += "<td>" + (i+1) + "</td>";
+				if (data[i]["profName"].length < maxProfLen){
+					str += "<td>" + data[i]["profName"] + "</td>";
+				} else {
+					str += "<td>" + data[i]["profName"].substring(0,maxProfLen-2) + "...</td>";
+				}
+				str += "<td>" + data[i]["id"] + "</td>";
+				if (data[i]["courseName"].length < maxCourseLen){
+					str += "<td>" + data[i]["courseName"] + "</td>";
+				} else {
+					str += "<td>" + data[i]["courseName"].substring(0,maxCourseLen-2) + "...</td>";
+				}
+				var percentageStr = ""
+				if ((data[i]["ar"]*100)%100 > 0){
+					percentageStr = Math.floor(data[i]["ar"]) + "% &plusmn " + Math.round((data[i]["ar"]*100)%100)
+				} else {
+					percentageStr = data[i]["ar"]					
+				}
+				
+				var percentageArr = firData[data[i]["id"].split(' ')[0]][data[i]["id"].split(' ')[1]]["Professors"][data[i]["profName"]]
+				str += "<td class=\"text-center\" percentageDisplay>" + "<a style=\"color:#3A7FCF\" href=\"#\" data-toggle=\"popover\" data-trigger=\"focus\" data-html=\"true\" title=\"" + "Submissions (" + percentageArr.length + ")" + "\" data-content=\"";
+
+				for (var n = 0; n < percentageArr.length; n++) {
+					str += (n+1) + ") " + percentageArr[n]["arange"] + "% | ";
+					if ("date" in percentageArr[n]) {
+						str += percentageArr[n]["date"].split(' ')[0];
+					} else {
+						str += "Before Oct. 2016";
+					}
+					str += "<br>"
+				}
+
+				str += "\">" + percentageStr + "%</a>" + "</td>";
+				str += "</tr>";
+			} else {
+				str += "<tr>";
+				str += "<td><img src=\"assets/whiteRect.png\" id=\"nuggetimg\"></td>";
+				str += "<td></td>";
+				str += "<td></td>";
+				str += "<td></td>";
+				str += "<td></td>";
+				str += "</tr>";
+			}
+		}
+		str += "</tbody>";
+
+		$(document).ready(function(){
+			$('[data-toggle="popover"]').popover().click(function(e) {
+				e.preventDefault();
+			});
+		});
+
+
+		document.getElementById('datatable').innerHTML = str;
+	}	 
+
+
+	function cleanStr(str){
+		var preoutput = str.trim();
+		preoutput = preoutput.toLowerCase();
+		var arr = preoutput.split(' ');
+		var output = "";
+		for (var i=0;i<arr.length;i++){
+			if (arr[i].toLowerCase() != "i" && arr[i].toLowerCase() != "ii" && arr[i].toLowerCase() != "iii" && arr[i].toLowerCase() != "iv"
+				&& arr[i].toLowerCase() != "i:" && arr[i].toLowerCase() != "ii:" && arr[i].toLowerCase() != "iii:" && arr[i].toLowerCase() != "iv:"){
+				output += " " + arr[i].charAt(0).toUpperCase() + arr[i].substring(1);
+		} else {
+			output += " " + arr[i].toUpperCase();
+		}
+	}
+	return output.trim();
+}
+
+$( "#searchbar" ).keydown(function(event) {
+	var input = document.getElementById('searchbar');
+	var key = event.which;
+	if (key == 8 && numBackspace == 0){
+		savedSearch = (retrieveElement("searchbar")).trim();
+		numBackspace++;
+	} else if (key == 8 && numBackspace != 2){
+		numBackspace++;
+	} else if (key == 8 && numBackspace == 2){
+		if (savedSearch.length > 3){
+			var lastSunday = dateOfLastSunday();
+			writeData("PrivateStatistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),savedSearch);
+		}
+		numBackspace++;
+	} else {
+		numBackspace = 0;
+	}
+});
+
+function dateOfLastSunday(){
+	var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+	var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+	var now = new Date();
+	var day = days[ now.getDay() ];
+	var daysAhead = days.indexOf(day);
+	var sunday = new Date();
+	sunday.setDate(sunday.getDate()-daysAhead);
+	sunday.setHours(0,0,0,0);
+	return (sunday.getYear()+1900) + " (" + sunday.getWeekNumber() + ") " + months[sunday.getMonth()] + " " + sunday.getDate();
+}
+
+Date.prototype.getWeekNumber = function(){
+	var d = new Date(+this);
+	d.setHours(0,0,0,0);
+	d.setDate(d.getDate()+4-(d.getDay()||7));
+	return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
+};
+
+function searchChange(){
+	var searchText = retrieveElement("searchbar")
+	if (searchText.length == 0) {
+		$("#tableerror").html("");
+		setTable(0,[]);
+		$("#searchres").html("<font color=\"grey\"><b>Search Results</b></font>");
+	} else if (searchText.length < 3){
+		$("#tableerror").html("<b>Search must be at least 3 characters long</b>");
+		setTable(0,[]);
+		$("#searchres").html("<font color=\"grey\"><b>Search Results</b></font>");
+	} else {
+		var matching = searchDatabaseForSubstring(searchText);
+		matching.sort(function(a,b) { return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
+		setTable(0,matching);
+		$("#searchres").html("<font color=\"grey\"><b>("+ matching.length +" Results)</b></font>");
+		if (matching.length > 0){
+			$("#tableerror").html("");
+		} else {
+			$("#tableerror").html("<b>No results matched your search</b>");
+		}
+	}
+}
+
+function init(){
+	//console.log("Build 289");
 	var config = {
-		apiKey: "AIzaSyCmlkGhuP4VTZa4a-eAvzJZoopzu2Pqx4M",
-		authDomain: "ezacu-716f6.firebaseapp.com",
-		databaseURL: "https://ezacu-716f6.firebaseio.com",
-		storageBucket: "ezacu-716f6.appspot.com",
-		messagingSenderId: "467399916123"
+		apiKey: "AIzaSyAIJlbre9lk8mbCphNx-mVes6DNP9ezWn4",
+		authDomain: "ezacu-website.firebaseapp.com",
+		databaseURL: "https://ezacu-website.firebaseio.com",
+		projectId: "ezacu-website",
+		storageBucket: "ezacu-website.appspot.com",
+		messagingSenderId: "230546373564"
 	};
+
 	firebase.initializeApp(config);	
 	
 	document.getElementById("submitquery").disabled = true;
 
 	var ref = firebase.database().ref();
-	ref.on("value", function(snapshot) {
+	ref.child("Departments").on("value", function(snapshot) {
 		this.firData = snapshot.val();
 		if (firstRun){
 			document.getElementById("submitquery").disabled = false;
-			console.log("Database read!");
-			var datArr = searchDatabaseForSubstring();
+			var datArr = searchDatabaseForSubstring("");
 			var profSet = new Set();
 			var courseSet = new Set();
 			var idSet = new Set();
@@ -79,9 +366,9 @@ function initDatabase(){
 		}
 	});
 
-	ref.on("value", function(snapshot) {
-		var database = snapshot.val();
-		$("#message").html("<b>" + database["Z-Message"] + "</b>");
+	ref.child("Z-Message").on("value", function(snapshot) {
+		var mes = snapshot.val();
+		$("#message").html("<b>" + mes + "</b>");
 	});
 
 	window.onresize = resize;
@@ -202,7 +489,7 @@ function initDatabase(){
 		var searchBarText = retrieveElement("searchbar");
 		if (searchBarText.length > 3){
 			var lastSunday = dateOfLastSunday();
-			writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),searchBarText);
+			writeData("PrivateStatistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),searchBarText);
 		}
 	}, false);
 
@@ -225,317 +512,33 @@ function initDatabase(){
 				writeData("Statistics/Users/" + newID,1);
 				writeData("Statistics/Visits",data["Visits"]+1);
 			}
+			userIDset = true;
 		} else {
 			console.log("Running Locally");
 		}
 	});
 }
 
-function ab(b){
-	if (b) {
-		return "O";
-	}
-	return "X";
-}
+function searchDatabaseForSubstring(substring){
 
-function filter(){
-	//console.log("started filter");
-	document.getElementById("submitquery").disabled = true;
-	setTimeout(function(){document.getElementById("submitquery").disabled = false;}, 700);
-	var textParam = null;//retrieveElement("textparam");
-	if (!textParam) {textParam = "";}
-	var lastSunday = dateOfLastSunday();
-	writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'), "T: " + ab(filterTechnical) + ", NT: " + ab(filterNonTechnical) + 
-		", GC: " + ab(filterGlobalCore) + ", Min: " + (minLevel/1000) + ", Max: " + (maxLevel/1000) + ", SN: " + ab(filterSilver) + ", GN: " + ab(filterGold));
+	var searchText = substring.toLowerCase();
+	var matching = [];
 
-	var datArr = searchDatabaseForSubstring(textParam);
-	if (filterGold || filterSilver){
-		datArr = datArr.filter(function(e){
-			var name = e["profName"];
-			if (filterGold){
-				for (var i = 0; i < goldNuggets["professors"].length; i++) {
-					var firstName = goldNuggets["professors"][i]["first_name"];
-					var lastName = goldNuggets["professors"][i]["last_name"];
-					if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
-						return true;
-					} 
-				}
-			} 
-			if (filterSilver){
-				for (var i = 0; i < silverNuggets["professors"].length; i++) {
-					var firstName = silverNuggets["professors"][i]["first_name"];
-					var lastName = silverNuggets["professors"][i]["last_name"];
-					if (name.indexOf(firstName) >= 0 && name.indexOf(lastName) >= 0){
-						return true;
-					} 
-				}
-			}
-			return false;
-		});
-	} 
-	if (filterGlobalCore){
-		datArr = datArr.filter(function(e){
-			var id = e["id"].split(' ');
-			for (var i = 0; i < globalCores.length; i++) {
-				var gcID = globalCores[i];
-				if (gcID.indexOf(id[0]) >= 0 && gcID.indexOf(id[1]) >= 0){
-					return true;
-				} 
-			}
-			return false;
-		});
-	}
-	if (filterTechnical){
-		datArr = datArr.filter(function(e){
-			var id = e["id"].split(' ');
-			return $.inArray(id[0], techs) != -1;
-		});
-	}
-	if (filterNonTechnical){
-		datArr = datArr.filter(function(e){
-			var id = e["id"].split(' ');
-			return $.inArray(id[0], nontechs) != -1;
-		});
-	}
-	if (document.getElementById('levelcheckboxmin').checked) {
-		datArr = datArr.filter(function(e){
-			var sig = (e["id"].split(' '))[1];
-			return Number(sig.charAt(sig.length-4))*1000 >= minLevel;
-		});
-	}
-	if (document.getElementById('levelcheckboxmax').checked) {
-		datArr = datArr.filter(function(e){
-			var sig = (e["id"].split(' '))[1];
-			return Number(sig.charAt(sig.length-4))*1000 <= maxLevel;
-		});
-	}
-
-	//console.log("Done!");
-	datArr.sort(function(a,b) {
-		return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
-		//console.log(datArr);
-		setTable(0,datArr);
-		$("#searchres").html("<font color=\"grey\"><b>("+ datArr.length +" Results)</b></font>");
-
-		if (datArr.length > 0){
-			$("#tableerror").html("");
-		} else {
-			$("#tableerror").html("<b>No results matched your search</b>");
-		}
-
-		return firebase.database().ref().child("Statistics").once('value').then(function(snapshot) {
-			if (window.location.protocol == 'https:'){
-				var data = snapshot.val();
-				var toWrite = data["Search-Queries"];
-				writeData("Statistics/Search-Queries",toWrite+1);
-			}
-		});
-	}
-
-	function nextPage() {
-		if (rightPageEnabled){
-			pageNumber++;
-			setTable(pageNumber,tableData);
-		}
-	}
-
-	function lastPage() {
-		if (leftPageEnabled){
-			pageNumber--;
-			setTable(pageNumber,tableData);
-		}
-	}
-
-	function resize() { 
-    	$('.popover').popover('hide')
-  	}
-
-	function setTable(page,data) {
-		var coursesPerPage = 16;
-
-		if (rightPageEnabled = (data.length > coursesPerPage*(page+1))){
-			$("#rightarrow").html("<img src=\"assets/rightpage.png\" style=\"height:20px;\">");
-		} else {
-			$("#rightarrow").html("<img src=\"assets/rightpagedis.png\" style=\"height:20px;\">");
-		}
-		if (leftPageEnabled = (page != 0)){
-			$("#leftarrow").html("<img src=\"assets/leftpage.png\" style=\"height:20px;\">");
-		} else {
-			$("#leftarrow").html("<img src=\"assets/leftpagedis.png\" style=\"height:20px;\">");
-		}
-		tableData = data;
-		pageNumber = page;
-		$("#pagenum").html("Page " + (page+1));
-		var str = "<thead>";
-		str += "<tr class=\"active\">";
-		str += "<th>#</th>";
-		str += "<th>Professor</th>";
-		str += "<th>Course ID</th>";
-		str += "<th>Course Name</th>"
-		str += "<th>A-Range</th>"
-		str += "</tr>"
-		str += "</thead>"
-		str += "<tbody>";
-		var maxProfLen = 27;
-		var maxCourseLen = 35;
-		for (var i=page*coursesPerPage; i<coursesPerPage*(page+1); i++){
-			if (i < data.length){				
-				str += "<tr>";
-				str += "<td>" + (i+1) + "</td>";
-				if (data[i]["profName"].length < maxProfLen){
-					str += "<td>" + data[i]["profName"] + "</td>";
-				} else {
-					str += "<td>" + data[i]["profName"].substring(0,maxProfLen-2) + "...</td>";
-				}
-				str += "<td>" + data[i]["id"] + "</td>";
-				if (data[i]["courseName"].length < maxCourseLen){
-					str += "<td>" + data[i]["courseName"] + "</td>";
-				} else {
-					str += "<td>" + data[i]["courseName"].substring(0,maxCourseLen-2) + "...</td>";
-				}
-				var percentageStr = ""
-				if ((data[i]["ar"]*100)%100 > 0){
-					percentageStr = Math.floor(data[i]["ar"]) + "% &plusmn " + Math.round((data[i]["ar"]*100)%100)
-				} else {
-					percentageStr = data[i]["ar"]					
-				}
-				
-				var percentageArr = firData["Departments"][data[i]["id"].split(' ')[0]][data[i]["id"].split(' ')[1]]["Professors"][data[i]["profName"]]
-				str += "<td class=\"text-center\" percentageDisplay>" + "<a style=\"color:#3A7FCF\" href=\"#\" data-toggle=\"popover\" data-trigger=\"focus\" data-html=\"true\" title=\"" + "Submissions (" + percentageArr.length + ")" + "\" data-content=\"";
-
-				for (var n = 0; n < percentageArr.length; n++) {
-					str += (n+1) + ") " + percentageArr[n]["arange"] + "% | ";
-					if ("date" in percentageArr[n]) {
-						str += percentageArr[n]["date"].split(' ')[0];
-					} else {
-						str += "Before Oct. 2016";
-					}
-					str += "<br>"
-				}
-
-				str += "\">" + percentageStr + "%</a>" + "</td>";
-				str += "</tr>";
-			} else {
-				str += "<tr>";
-				str += "<td><img src=\"assets/whiteRect.png\" id=\"nuggetimg\"></td>";
-				str += "<td></td>";
-				str += "<td></td>";
-				str += "<td></td>";
-				str += "<td></td>";
-				str += "</tr>";
-			}
-		}
-		str += "</tbody>";
-
-		$(document).ready(function(){
-    		$('[data-toggle="popover"]').popover().click(function(e) {
-        		e.preventDefault();
-     		});
-		 });
-
-
-		document.getElementById('datatable').innerHTML = str;
-	}	 
-
-
-	function cleanStr(str){
-		var preoutput = str.trim();
-		preoutput = preoutput.toLowerCase();
-		var arr = preoutput.split(' ');
-		var output = "";
-		for (var i=0;i<arr.length;i++){
-			if (arr[i].toLowerCase() != "i" && arr[i].toLowerCase() != "ii" && arr[i].toLowerCase() != "iii" && arr[i].toLowerCase() != "iv"
-				 && arr[i].toLowerCase() != "i:" && arr[i].toLowerCase() != "ii:" && arr[i].toLowerCase() != "iii:" && arr[i].toLowerCase() != "iv:"){
-				output += " " + arr[i].charAt(0).toUpperCase() + arr[i].substring(1);
-			} else {
-				output += " " + arr[i].toUpperCase();
-			}
-		}
-		return output.trim();
-	}
-
-	$( "#searchbar" ).keydown(function(event) {
-  		var input = document.getElementById('searchbar');
-		var key = event.which;
-		if (key == 8 && numBackspace == 0){
-			savedSearch = (retrieveElement("searchbar")).trim();
-			numBackspace++;
-		} else if (key == 8 && numBackspace != 2){
-			numBackspace++;
-		} else if (key == 8 && numBackspace == 2){
-			if (savedSearch.length > 3){
-				var lastSunday = dateOfLastSunday();
-				writeData("Statistics/Searches/" + lastSunday + "/" + Date.now() + " " + $.cookie('userID'),savedSearch);
-			}
-			numBackspace++;
-		} else {
-			numBackspace = 0;
-		}
-	});
-
-	function dateOfLastSunday(){
-		var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-		var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-		var now = new Date();
-		var day = days[ now.getDay() ];
-		var daysAhead = days.indexOf(day);
-		var sunday = new Date();
-    	sunday.setDate(sunday.getDate()-daysAhead);
-    	sunday.setHours(0,0,0,0);
-		return (sunday.getYear()+1900) + " (" + sunday.getWeekNumber() + ") " + months[sunday.getMonth()] + " " + sunday.getDate();
-	}
-
-	Date.prototype.getWeekNumber = function(){
-		var d = new Date(+this);
-		d.setHours(0,0,0,0);
-		d.setDate(d.getDate()+4-(d.getDay()||7));
-		return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
-	};
-
-	function searchChange(){
-		var searchText = retrieveElement("searchbar")
-		if (searchText.length == 0) {
-			$("#tableerror").html("");
-			setTable(0,[]);
-			$("#searchres").html("<font color=\"grey\"><b>Search Results</b></font>");
-		} else if (searchText.length < 3){
-			$("#tableerror").html("<b>Search must be at least 3 characters long</b>");
-			setTable(0,[]);
-			$("#searchres").html("<font color=\"grey\"><b>Search Results</b></font>");
-		} else {
-			var matching = searchDatabaseForSubstring(searchText);
-			matching.sort(function(a,b) { return (a["ar"] < b["ar"]) ? 1 : ((b["ar"] < a["ar"]) ? -1 : 0);} );
-			setTable(0,matching);
-			$("#searchres").html("<font color=\"grey\"><b>("+ matching.length +" Results)</b></font>");
-			if (matching.length > 0){
-				$("#tableerror").html("");
-			} else {
-				$("#tableerror").html("<b>No results matched your search</b>");
-			}
-		}
-	}
-
-
-	function searchDatabaseForSubstring(substring = ""){
-		
-		var searchText = substring.toLowerCase();
-		var matching = [];
-		
 		//console.log("Search text changed: " + searchText);
-		var depts = Object.keys(firData["Departments"]);
+		var depts = Object.keys(firData);
 		for (var i = depts.length - 1; i >= 0; i--) {
 			if (searchText.length == 0 || (depts[i].toLowerCase()).indexOf(searchText) >= 0){
-				var courseSigs = Object.keys(firData["Departments"][depts[i]]);
+				var courseSigs = Object.keys(firData[depts[i]]);
 					for (var j = courseSigs.length - 1; j >= 0; j--) {//A single course now
-						var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
+						var courseNameArrNumbers = Object.keys(firData[depts[i]][courseSigs[j]]["Names"]);
 						courseNameArrNumbers.sort(function(a,b) {
-							var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
-							var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
+							var aVar = firData[depts[i]][courseSigs[j]]["Names"][a]["count"];
+							var bVar = firData[depts[i]][courseSigs[j]]["Names"][b]["count"];
 							return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
-						var mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
-						var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
+						var mostPopularCourseName = firData[depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+						var profNames = Object.keys(firData[depts[i]][courseSigs[j]]["Professors"]);
 						for (var k = profNames.length - 1; k >= 0; k--) {
-							var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
+							var arangeArr = firData[depts[i]][courseSigs[j]]["Professors"][profNames[k]];
 							var averageArange = 0;
 							var arArr = [];
 							for (var m = arangeArr.length - 1; m >= 0; m--) {
@@ -550,18 +553,18 @@ function filter(){
 						}
 					}
 				} else {
-					var courseSigs = Object.keys(firData["Departments"][depts[i]]);
+					var courseSigs = Object.keys(firData[depts[i]]);
 					for (var j = courseSigs.length - 1; j >= 0; j--) {
 						if ((depts[i] + " " + courseSigs[j]).toLowerCase().indexOf(searchText) >= 0){
-							var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
+							var courseNameArrNumbers = Object.keys(firData[depts[i]][courseSigs[j]]["Names"]);
 							courseNameArrNumbers.sort(function(a,b) {
-								var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
-								var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
+								var aVar = firData[depts[i]][courseSigs[j]]["Names"][a]["count"];
+								var bVar = firData[depts[i]][courseSigs[j]]["Names"][b]["count"];
 								return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
-							var mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
-							var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
+							var mostPopularCourseName = firData[depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+							var profNames = Object.keys(firData[depts[i]][courseSigs[j]]["Professors"]);
 							for (var k = profNames.length - 1; k >= 0; k--) {
-								var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
+								var arangeArr = firData[depts[i]][courseSigs[j]]["Professors"][profNames[k]];
 								var averageArange = 0;
 								var arArr = [];
 								for (var m = arangeArr.length - 1; m >= 0; m--) {
@@ -575,22 +578,22 @@ function filter(){
 								matching.push(obj);
 							}
 						} else {
-							var courseNameArrNumbers = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Names"]);
+							var courseNameArrNumbers = Object.keys(firData[depts[i]][courseSigs[j]]["Names"]);
 							var foundCourseNameWithSubstring = false;
 							for (var n = courseNameArrNumbers.length - 1; n >= 0; n--) {
-								if (((firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[n]]["name"]).toLowerCase()).indexOf(searchText) >= 0){
+								if (((firData[depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[n]]["name"]).toLowerCase()).indexOf(searchText) >= 0){
 									foundCourseNameWithSubstring = true;
 								}
 							}
 							courseNameArrNumbers.sort(function(a,b) {
-								var aVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][a]["count"];
-								var bVar = firData["Departments"][depts[i]][courseSigs[j]]["Names"][b]["count"];
+								var aVar = firData[depts[i]][courseSigs[j]]["Names"][a]["count"];
+								var bVar = firData[depts[i]][courseSigs[j]]["Names"][b]["count"];
 								return (aVar < bVar) ? 1 : ((bVar < aVar) ? -1 : 0);} );
-							var mostPopularCourseName = firData["Departments"][depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
-							var profNames = Object.keys(firData["Departments"][depts[i]][courseSigs[j]]["Professors"]);
+							var mostPopularCourseName = firData[depts[i]][courseSigs[j]]["Names"][courseNameArrNumbers[0]]["name"];
+							var profNames = Object.keys(firData[depts[i]][courseSigs[j]]["Professors"]);
 							for (var k = profNames.length - 1; k >= 0; k--) {
 								if (foundCourseNameWithSubstring || (profNames[k].toLowerCase()).indexOf(searchText) >= 0){
-									var arangeArr = firData["Departments"][depts[i]][courseSigs[j]]["Professors"][profNames[k]];
+									var arangeArr = firData[depts[i]][courseSigs[j]]["Professors"][profNames[k]];
 									var averageArange = 0;
 									var arArr = [];
 									for (var m = arangeArr.length - 1; m >= 0; m--) {
@@ -678,28 +681,33 @@ function filter(){
 	
 
 	function submitData(pname,id,name,ar,datestr) {
+		var userIDtoUse = "localUser";
+		if (userIDset){
+			userIDtoUse = $.cookie('userID');
+		}
+
+
 		var idarr = id.split(' ');
 		var dept = idarr[0].toUpperCase();
 		var courseSig = idarr[1].toUpperCase();
 		var courseName = cleanStr(name);
 		var profName = cleanStr(pname);
 
-		var subVerbArr = firData["Statistics"]["Submissions-Verb"];
-		subVerbArr.push($.cookie('userID') + ": " + dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)");
-		writeData("Statistics/Submissions-Verb",subVerbArr);
+		var strToWrite = ""+userIDtoUse + ": " + dept + " " + courseSig + " - " + courseName + " | " + profName + " >> (" + ar + "%)";
+		writeData("Statistics/Submissions-Verb/" + Date.now(),strToWrite);
 
-     	if (!(firData["Departments"].hasOwnProperty(dept))){//Dept not found
-     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
+     	if (!(firData.hasOwnProperty(dept))){//Dept not found
+     		writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:userIDtoUse}]);
      		writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
      		//console.log("#1");
      		return;
      	} 
 
-     	var courses = Object.keys(firData["Departments"][dept])
+     	var courses = Object.keys(firData[dept])
      	for (var i = courses.length - 1; i >= 0; i--) {
      		var c = courses[i];
      		if (c.substring(c.length-4) == courseSig.substring(courseSig.length-4)){//Course id IS found
-     			var profs = Object.keys(firData["Departments"][dept][c]["Professors"])
+     			var profs = Object.keys(firData[dept][c]["Professors"])
      			var profsWithLev = [];
      			for (var i = profs.length - 1; i >= 0; i--) {
      				var splitProfName = profName.toLowerCase().split(' ');
@@ -711,13 +719,13 @@ function filter(){
      			}
      			profsWithLev.sort(function(a,b) {return (a.lev > b.lev) ? 1 : ((b.lev > a.lev) ? -1 : 0);} );
      			if (profsWithLev[0].lev > 4) {
-     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
+     				writeData("Departments/" + dept + "/" + c + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:userIDtoUse}]);
      			} else {
-     				var currentArr = firData["Departments"][dept][c]["Professors"][profsWithLev[0].prof];
-     				currentArr.push({arange:ar,date:datestr,contributor:$.cookie('userID')});
+     				var currentArr = firData[dept][c]["Professors"][profsWithLev[0].prof];
+     				currentArr.push({arange:ar,date:datestr,contributor:userIDtoUse});
      				writeData("Departments/" + dept + "/" + c + "/Professors/" + profsWithLev[0].prof,currentArr);
      			}
-     			var usedNames = firData["Departments"][dept][c]["Names"];
+     			var usedNames = firData[dept][c]["Names"];
      			//console.log("#2");
      			for (var i = usedNames.length - 1; i >= 0; i--) {
      				if (usedNames[i]["name"] == courseName){
@@ -733,7 +741,7 @@ function filter(){
      	}
      	//console.log("#3");
      	//Write full path, since the dept exists but not the course
-     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:$.cookie('userID')}]);
+     	writeData("Departments/" + dept + "/" + courseSig + "/Professors/" + profName,[{arange:ar,date:datestr,contributor:userIDtoUse}]);
      	writeData("Departments/" + dept + "/" + courseSig + "/Names",[{name:courseName,count:1}]);
 
      }
@@ -749,16 +757,16 @@ function filter(){
      }
 
 
-function makeid(length)
-{
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+     function makeid(length)
+     {
+     	var text = "";
+     	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for( var i=0; i < length; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+     	for( var i=0; i < length; i++ )
+     		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-    return text;
-}
+     	return text;
+     }
 
 //Taken from http://stackoverflow.com/a/11958496/5057543
 function levDist(s, t) {

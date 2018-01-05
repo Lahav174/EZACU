@@ -48,6 +48,11 @@ font-size: large;
 	margin-left: -20px;
 }
 
+#inner {
+	width: 70%;
+	margin: 0 auto;
+}
+
 #filterheader {
 	background-color: #C01C1C;
 }
