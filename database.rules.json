@@ -1,0 +1,20 @@
+{
+  "rules": {
+    "Departments": {
+    	".read": true,
+    	".write": true
+    },
+    "Statistics": {
+    	".read": true,
+    	".write": true
+    },
+    "PrivateStatistics": {
+    	".read": false,
+    	".write": true
+    },
+    "Z-Message": {
+    	".read": true,
+    	".write": false
+    }  
+  }
+}

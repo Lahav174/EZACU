@@ -654,7 +654,7 @@ function searchDatabaseForSubstring(substring){
 			$("#submissionerror").html("Please enter the full name of the professor");
 			return;
 		} 
-		if (aRange.length == 0 || !($.isNumeric(aRange)) || Number(aRange) < 0 || Number(aRange) > 100){
+		if (aRange.length == 0 || aRange.length > 2 || !($.isNumeric(aRange)) || Number(aRange) < 0 || Number(aRange) > 100){
 			$("#submissionerror").html("Please enter the A-Range in the correct format");
 			return;
 		}
