@@ -35,6 +35,32 @@
 font-size: large;
 }
 
+#tabbar {
+	background-color: #F7F7EE;
+	width: 100%;
+	
+}
+
+.tab {
+	height: 45px;
+	padding-top: 8px;
+	width: 155px;
+}
+
+#ezacutab{
+	background-color: #ECF1F8;
+	margin-left: 100px;
+	border:1px solid grey;
+	border-bottom-color: #ECF1F8;
+}
+
+#scorecutab {
+	background-color: #657283;
+	margin-left: 0px;
+	border:1px solid grey;
+	border-bottom-color: #657283;
+}
+
 .arrowbtn {
 	border-color: rgba(100, 100, 100, 0.0);
 	background-color: rgba(100, 100, 100, 0.0);
